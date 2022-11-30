@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+    nginx:
+        restart: unless-stopped
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        container_name: nginx
+        expose:
+            - 80
+        ports:
+            - 8888:80
+    mongo:
+        restart: unless-stopped
+        build:
+            context: ./mongo
+            dockerfile: Dockerfile
+        container_name: mongo
+        volumes:
+            - Z:/mongo/data:/data/db
+        expose:
+            - 27017
+        ports:
+            - 27018:27017
+        # command: mongod --bind_ip_all
+    node1:
+        restart: on-failure:5
+        build:
+            context: ./node
+            dockerfile: Dockerfile
+            target: base
+        container_name: fastify-1
+        volumes:
+            - ./node:/home/node/app
+            - ./node/nodemon.json:/home/node/app/nodemon.json
+        expose:
+            - 4000
+        ports:
+            - 8080:4000
+        command: yarn dev
+        depends_on:
+            - "mongo"
+    node2:
+        restart: on-failure:5
+        build:
+            context: ./node
+            dockerfile: Dockerfile
+            target: base
+        container_name: fastify-2
+        volumes:
+            - ./node/src:/home/node/app/src
+            - ./node/nodemon.json:/home/node/app/nodemon.json
+        expose:
+            - 4000
+        ports:
+            - 8081:4000
+        command: yarn dev
+        depends_on:
+            - mongo
