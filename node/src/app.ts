@@ -9,9 +9,9 @@ import { cpus } from 'os';
 // 確認為主 process
 if (cluster.isPrimary) {
 	const numCPUs = cpus().length;
-	console.log(`CPUs: ${numCPUs}`);
+	// console.log(`CPUs: ${numCPUs}`);
 
-	for (let i = 0; i < numCPUs / 2; i++) {
+	for (let i = 0; i < numCPUs / 4; i++) {
 		const wk = cluster.fork();
 
 		wk.on('online', () => {

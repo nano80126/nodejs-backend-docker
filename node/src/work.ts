@@ -11,7 +11,7 @@ dotenv.config();
 
 const port: number = Number(process.env.PORT) || 3000;
 
-let count = 0;
+const count = 0;
 
 server.register(fastifyStatic, {
 	root: path.join(__dirname, './dist'),
@@ -31,20 +31,14 @@ server.register(fastifyCors, {
 });
 
 server.get('/', async (req, res) => {
-	// res.sendFile("F:\\projects\\docker-vite\vuetify-project\\dist");
+	// res.sendFile('F:\\projects\\docker-vite\\vuetify-project\\dist');
 	// const stream = fs.createReadStream(path.resolve('./dist'), 'utf-8');
-	return res.sendFile('index.html');
-	// return res.code(200).type('text/html').send(stream);
+	// return res.sendFile('index.html');
+	return '123';
 });
 
-server.get('/ping', async () => {
-	return 'pong\n';
-});
-
-server.get('/hello', async (req, res) => {
-	console.log(count++);
-	console.log(port);
-	res.send('hello');
+server.get('/ping', async (req, reply) => {
+	return 'pong\r';
 });
 
 server.listen(
@@ -58,8 +52,6 @@ server.listen(
 			process.exit(1);
 		}
 		console.log(`Server listening at ${address}`);
-
-		// require('./services/searchApi');
 	},
 );
 

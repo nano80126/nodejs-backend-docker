@@ -1,7 +1,17 @@
 import { RouteOptions } from 'fastify';
-import { getList, getSingleList, getListCards } from '../controllers/listController';
+import { ping, getList, getSingleList, getListCards, searchList } from '../controllers/listController';
 
 const routes: RouteOptions[] = [
+	{
+		method: 'GET',
+		url: '/api/ping/:id',
+		handler: ping,
+	},
+	{
+		method: 'GET',
+		url: '/api/searchYouTube',
+		handler: searchList,
+	},
 	{
 		method: 'GET',
 		url: '/api/list',

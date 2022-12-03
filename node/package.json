@@ -17,6 +17,8 @@
 		"@fastify/cors": "^8.2.0",
 		"@fastify/static": "^6.5.0",
 		"@fastify/swagger": "^8.2.0",
+		"axios": "^1.2.0",
+		"cheerio": "^1.0.0-rc.12",
 		"fastify": "^4.7.0",
 		"mongoose": "^6.7.4"
 	},
