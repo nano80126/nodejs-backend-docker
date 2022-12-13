@@ -11,6 +11,18 @@ services:
             - 80
         ports:
             - 8888:80
+    mysql: 
+        restart: unless-stopped
+        build: 
+            context: ./mysql
+            dockerfile: Dockerfile
+        container_name: mysql
+        volumes:
+            - Z:/mysql:/var/lib/mysql
+        expose: 
+            - 3306
+        ports:
+            - 3306:3306
     mongo:
         restart: unless-stopped
         build:
@@ -24,6 +36,18 @@ services:
         ports:
             - 27018:27017
         # command: mongod --bind_ip_all
+    redis: 
+        restart: unless-stopped
+        build: 
+            context: ./redis
+            dockerfile: Dockerfile
+        container_name: redis
+        volumes:
+            - Z:/redis:/data
+        expose:
+            - 6379
+        ports:
+            - 6379:6379
     node1:
         restart: on-failure:5
         build:
@@ -40,7 +64,8 @@ services:
             - 8080:4000
         command: yarn dev
         depends_on:
-            - "mongo"
+            - mongo
+            - mysql
     node2:
         restart: on-failure:5
         build:
@@ -49,7 +74,7 @@ services:
             target: base
         container_name: fastify-2
         volumes:
-            - ./node/src:/home/node/app/src
+            - ./node:/home/node/app
             - ./node/nodemon.json:/home/node/app/nodemon.json
         expose:
             - 4000
@@ -58,3 +83,4 @@ services:
         command: yarn dev
         depends_on:
             - mongo
+            - mysql

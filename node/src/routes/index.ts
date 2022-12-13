@@ -1,5 +1,6 @@
 import { RouteOptions } from 'fastify';
-import { ping, getList, getSingleList, getListCards, searchList } from '../controllers/listController';
+import { ping, getList, getSingleList, getListCards } from '../controllers/listController';
+import { searchYT } from '../controllers/searchController';
 
 const routes: RouteOptions[] = [
 	{
@@ -10,7 +11,7 @@ const routes: RouteOptions[] = [
 	{
 		method: 'GET',
 		url: '/api/searchYouTube',
-		handler: searchList,
+		handler: searchYT,
 	},
 	{
 		method: 'GET',

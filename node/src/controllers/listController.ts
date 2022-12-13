@@ -1,11 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { LyricsCrawled } from '../api/search';
 import List from '../models/listSchema';
-import axios from 'axios';
-
-// console.log(process.env.API_KEY);
-
-// const list = require('../models/listSchema');
 
 export async function ping(req: FastifyRequest, reply: FastifyReply) {
 	try {
@@ -13,31 +8,6 @@ export async function ping(req: FastifyRequest, reply: FastifyReply) {
 		console.log(req.query);
 		// reply.status(200).send('pong\n');
 		return 'pong\r';
-	} catch (err) {
-		console.log(err);
-	}
-}
-
-export async function searchList(req: FastifyRequest, reply: FastifyReply) {
-	try {
-		console.log(req.params);
-		console.log(req.query);
-
-		const res = await axios.get('https://www.googleapis.com/youtube/v3/search', {
-			headers: {
-				Accept: 'application/json',
-				'Accept-Encoding': 'indentity',
-			},
-			params: {
-				part: 'snippet',
-				q: '怪物',
-				maxResults: 20,
-				key: process.env.API_KEY,
-			},
-		});
-		console.log(res.data);
-		console.log(res.data.items);
-		reply.status(200).send(res.data);
 	} catch (err) {
 		console.log(err);
 	}

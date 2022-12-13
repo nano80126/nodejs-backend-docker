@@ -1,4 +1,4 @@
-import { server } from '../work';
+import { server } from '../app';
 import mongoose from 'mongoose';
 // import { LyricsCrawled } from '../api/search';
 import routes from '../routes/';
