@@ -17,4 +17,3 @@ const listSchema = new Schema<IList>({
 });
 
 export default model('List', listSchema);
-// module.exports = mongoose.model('list', listSchema);

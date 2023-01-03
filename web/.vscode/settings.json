@@ -1,0 +1,19 @@
+{
+	"eslint.validate": ["javascript", "javascriptreact"],
+	"editor.detectIndentation": false,
+	"editor.tabSize": 4,
+	"editor.formatOnSave": false, // true會衝突 // prettier & eslint
+	"editor.codeActionsOnSave": {
+		"source.fixAll": false,
+		"source.fixAll.eslint": true // 由 eslint 整理，但為prettier設定
+	},
+	"[json]": {
+		"editor.formatOnSave": true // 針對 json
+	},
+	"[javascript]": {
+		"editor.formatOnSave": true // 針對 .prettierrc.js & .eslintrc.js
+	},
+	"[typescript]":{
+		"editor.formatOnSave": true // 針對 ts
+	},
+}

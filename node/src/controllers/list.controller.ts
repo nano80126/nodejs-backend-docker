@@ -1,33 +1,22 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { LyricsCrawled } from '../api/search';
+import { LyricsCrawled } from '../types/search';
 import List from '../models/listSchema';
-
-export async function ping(req: FastifyRequest, reply: FastifyReply) {
-	try {
-		console.log(req.params);
-		console.log(req.query);
-		// reply.status(200).send('pong\n');
-		return 'pong\r';
-	} catch (err) {
-		console.log(err);
-	}
-}
 
 export async function getList() {
 	try {
 		const list = await List.find();
 		return list;
 	} catch (err) {
-		console.log(`1111 ${err}`);
+		console.log(`${err}`);
 	}
 }
 
-export async function getSingleList(req: FastifyRequest, reply: FastifyReply) {
+export async function getSingleList() {
 	try {
 		const list = await List.findById(0);
 		return list;
 	} catch (err) {
-		console.log(`2222 ${err}`);
+		console.log(`${err}`);
 	}
 }
 

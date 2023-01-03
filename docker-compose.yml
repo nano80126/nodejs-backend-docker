@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
     nginx:
-        restart: unless-stopped
+        restart: on-failure:5
         build:
             context: ./nginx
             dockerfile: Dockerfile
@@ -53,26 +53,8 @@ services:
         build:
             context: ./node
             dockerfile: Dockerfile
-            target: base
+            # target: base
         container_name: fastify-1
-        volumes:
-            - ./node:/home/node/app
-            - ./node/nodemon.json:/home/node/app/nodemon.json
-        expose:
-            - 4000
-        ports:
-            - 8080:4000
-        command: yarn dev
-        depends_on:
-            - mongo
-            - mysql
-    node2:
-        restart: on-failure:5
-        build:
-            context: ./node
-            dockerfile: Dockerfile
-            target: base
-        container_name: fastify-2
         volumes:
             - ./node:/home/node/app
             - ./node/nodemon.json:/home/node/app/nodemon.json
@@ -84,3 +66,39 @@ services:
         depends_on:
             - mongo
             - mysql
+    node2:
+        restart: on-failure:5
+        build:
+            context: ./node
+            dockerfile: Dockerfile
+            # target: base
+        container_name: fastify-2
+        volumes:
+            - ./node:/home/node/app
+            - ./node/nodemon.json:/home/node/app/nodemon.json
+        expose:
+            - 4000
+        ports:
+            - 8082:4000
+        command: yarn dev
+        depends_on:
+            - mongo
+            - mysql
+    web:
+        restart: on-failure:5
+        build:
+            context: ./web
+            dockerfile: Dockerfile
+            # target: base
+        container_name: web-1
+        volumes:
+            - ./web:/home/node/app
+            - ./web/nodemon.json:/home/node/app/nodemon.json
+        expose:
+            - 3000
+        ports:
+            - 8080:3000
+        command: yarn dev
+        depends_on:
+            - node1
+            - node2
