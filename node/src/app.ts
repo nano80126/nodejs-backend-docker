@@ -1,14 +1,13 @@
 import fastify from 'fastify';
+// import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+
 // import fastifyStatic from '@fastify/static';
 import fastifyCors from '@fastify/cors';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 // import path from 'path';
 
-// import routes from './routes/';
-// import cluster from 'cluster';
-// import { cpus } from 'os';
-
-const server = fastify({ logger: false });
+const server = fastify({ logger: false }).withTypeProvider<TypeBoxTypeProvider>();
 // 載入 .env
 dotenv.config();
 // 取得 port
@@ -24,10 +23,6 @@ server.register(fastifyCors, {
 	// origin: 'http://localhost',
 	// origin: (origin, callback) => {
 	// 	const hostname = new URL(origin).hostname;
-	// 	console.log(new URL(origin));
-	// 	console.log(new URL(origin).hostname);
-	// 	console.log(new URL(origin).port);
-	// 	console.log(origin);
 
 	// 	if (hostname === 'localhost') {
 	// 		callback(null, true);
@@ -39,6 +34,25 @@ server.register(fastifyCors, {
 	allowedHeaders: ['Content-Type', 'Authorization'],
 	// credentials: true
 });
+
+// server.get(
+// 	'/route',
+// 	{
+// 		schema: {
+// 			querystring: {
+// 				type: 'object',
+// 				properties: {
+// 					a: { type: 'string' },
+// 					b: { type: 'number' },
+// 				},
+// 				required: ['a', 'b'],
+// 			},
+// 		},
+// 	},
+// 	(req, rep) => {
+// 		const { a, b } = req.query;
+// 	},
+// );
 
 // server.get('/', async (req: FastifyRequest, reply: FastifyReply) => {
 // 	// reply.raw.setHeader("Access-Control-Allow-Origin", "*");

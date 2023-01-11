@@ -1,17 +1,16 @@
 import { RouteOptions } from 'fastify';
-import { getLyrics } from '../controllers/lyrics.controller';
+import { FastifyRequest } from 'fastify/types/request';
+import { getLyricsList } from '../controllers/lyrics.controller';
 import { LyricsSearchRequest } from '../types/lyrics';
+// import { Static, Type } from '@sinclair/typebox';
 
 const routes: RouteOptions[] = [
 	{
 		method: 'GET',
-		url: '/lyrics',
-		handler: getLyrics,
+		url: '/lyrics-list',
+		handler: getLyricsList,
 		schema: {
-			querystring: {
-				artist: { type: 'string' },
-				song: { type: 'string' },
-			},
+			querystring: LyricsSearchRequest,
 		},
 	},
 	{

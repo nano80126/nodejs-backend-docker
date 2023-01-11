@@ -1,4 +1,4 @@
-import { RouteOptions } from 'fastify';
+import { RouteOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { server } from '../app';
 // import { ping } from '../controllers/ping.controller';
 // import { getList, getSingleList, getListCards } from '../controllers/list.controller';
@@ -21,5 +21,31 @@ routes.push(...searchRoutes);
 routes.forEach((r) => {
 	server.route(r);
 });
+
+// server.get<{
+// 	Params: {
+// 		foo: string;
+// 	};
+// 	Querystring: {
+// 		foo: string;
+// 	};
+// }>(
+// 	'/auth',
+// 	{
+// 		schema: {
+// 			querystring: {
+// 				type: 'object',
+// 				properties: {
+// 					foo: {
+// 						type: 'string',
+// 					},
+// 				},
+// 			},
+// 		},
+// 	},
+// 	async (req, rep) => {
+// 		const { foo } = req.query;
+// 	},
+// );
 
 export default routes;

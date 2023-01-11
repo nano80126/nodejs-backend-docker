@@ -58,4 +58,4 @@ export async function getLyrics(artist: string, song: string) {
 	return result;
 }
 
-export default { getLyrics };
+export default { getLyricsList: getLyrics };
