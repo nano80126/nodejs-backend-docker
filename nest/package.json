@@ -25,13 +25,17 @@
 		"@nestjs/platform-express": "^9.2.1",
 		"@nestjs/platform-fastify": "^9.2.1",
 		"@nestjs/swagger": "^6.1.4",
+		"@nestjs/typeorm": "^9.0.1",
 		"axios": "^1.2.2",
 		"cheerio": "^1.0.0-rc.12",
 		"fastify": "^4.11.0",
+		"mysql2": "^3.0.0",
 		"reflect-metadata": "^0.1.13",
-		"rxjs": "^7.8.0"
+		"rxjs": "^7.8.0",
+		"typeorm": "^0.3.11"
 	},
 	"devDependencies": {
+		"@nestjs/cli": "^9.1.8",
 		"@nestjs/schematics": "^9.0.4",
 		"@nestjs/testing": "^9.2.1",
 		"@types/chai": "^4.3.4",
@@ -45,6 +49,8 @@
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.0.3",
 		"eslint": "^8.24.0",
+		"eslint-config-prettier": "^8.6.0",
+		"eslint-plugin-prettier": "^4.2.1",
 		"mocha": "^10.2.0",
 		"nodemon": "^2.0.20",
 		"prettier": "^2.7.1",

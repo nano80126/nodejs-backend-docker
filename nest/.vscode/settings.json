@@ -1,5 +1,5 @@
 {
-	"eslint.validate": ["javascript", "javascriptreact"],
+	"eslint.validate": ["javascript", "javascriptreact", "typescript"],
 	"editor.detectIndentation": false,
 	"editor.tabSize": 4,
 	"editor.formatOnSave": false, // true會衝突 // prettier & eslint
