@@ -6,8 +6,7 @@ import { CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
 
 console.log(__dirname);
 
-		// "test": "mocha -r ts-node/register -r tsconfig-paths/register",
-
+// "test": "mocha -r ts-node/register -r tsconfig-paths/register",
 
 describe('LyricsController', () => {
 	let lyricsController: LyricsController;

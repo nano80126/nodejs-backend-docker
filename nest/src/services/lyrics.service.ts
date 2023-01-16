@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
+import { Lyrics } from '@/entities/lyrics.entity';
 
 @Injectable()
 export class LyricsService {
+	constructor(
+		@InjectRepository(Lyrics)
+		private lyricsRespository: Repository<Lyrics>,
+	) {}
+
 	/**
 	 *
 	 * @param artist 歌手
@@ -67,8 +75,12 @@ export class LyricsService {
 		return result;
 	}
 
-	async saveSearchRecord(keyword: string, target: 'title' | 'artist') {
-		console.log(keyword, target);
+	async saveSearchRecord() {
+		// console.log(keyword, target);
+		return this.lyricsRespository.save({
+			artiest: '123',
+			song: '456',
+		});
 	}
 
 	/**
