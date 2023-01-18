@@ -19,7 +19,7 @@
 		"sh": "docker exec -it nest-1 sh"
 	},
 	"dependencies": {
-		"@fastify/static": "^6.6.0",
+		"@fastify/static": "^6.6.1",
 		"@nestjs/common": "^9.2.1",
 		"@nestjs/core": "^9.2.1",
 		"@nestjs/platform-express": "^9.2.1",

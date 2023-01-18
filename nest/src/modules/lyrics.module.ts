@@ -9,5 +9,6 @@ import { Lyrics } from '@/entities/lyrics.entity';
 	imports: [TypeOrmModule.forFeature([Lyrics])],
 	controllers: [LyricsController],
 	providers: [LyricsService],
+	// exports: [TypeOrmModule],
 })
 export class LyrcisModule {}

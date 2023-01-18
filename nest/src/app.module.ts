@@ -4,19 +4,22 @@ import { AppService } from './app.service';
 import { LyrcisModule } from '@/modules/lyrics.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Lyrics } from './entities/lyrics.entity';
+
 const typeOrnRoot = TypeOrmModule.forRoot({
 	type: 'mysql',
-	host: 'localhost',
+	host: 'mysql',
 	port: 3306,
 	username: 'root',
 	password: '0000',
-	database: 'test',
-	entities: [],
+	database: 'TEST',
+	retryAttempts: 3,
+	entities: [Lyrics],
 	synchronize: true,
 });
 
 @Module({
-	imports: [LyrcisModule],
+	imports: [typeOrnRoot, LyrcisModule],
 	controllers: [AppController],
 	providers: [AppService],
 })

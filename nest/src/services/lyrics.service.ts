@@ -75,10 +75,13 @@ export class LyricsService {
 		return result;
 	}
 
+	/**
+	 * 123
+	 * @returns
+	 */
 	async saveSearchRecord() {
-		// console.log(keyword, target);
 		return this.lyricsRespository.save({
-			artiest: '123',
+			artist: '123',
 			song: '456',
 		});
 	}

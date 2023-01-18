@@ -1,17 +1,17 @@
 version: "3.7"
 
 services:
-  nginx:
-    restart: on-failure:5
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    image: docker-nginx
-    container_name: nginx
-    expose:
-      - 80
-    ports:
-      - 8888:80
+  # nginx:
+  #   restart: on-failure:5
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   image: docker-nginx
+  #   container_name: nginx
+  #   expose:
+  #     - 80
+  #   ports:
+  #     - 8888:80
   mysql:
     restart: unless-stopped
     build:
@@ -20,38 +20,38 @@ services:
     image: docker-mysql
     container_name: mysql
     volumes:
-      - Z:/mysql:/var/lib/mysql
+      - ~/mysql:/var/lib/mysql
     expose:
       - 3306
     ports:
       - 3306:3306
-  mongo:
-    restart: unless-stopped
-    build:
-      context: ./mongo
-      dockerfile: Dockerfile
-    image: docker-mongo
-    container_name: mongo
-    volumes:
-      - Z:/mongo/data/db:/data/db
-      - Z:/mongo/data/configdb:/data/configdb
-    expose:
-      - 27017
-    ports:
-      - 27018:27017
-  redis:
-    restart: unless-stopped
-    build:
-      context: ./redis
-      dockerfile: Dockerfile
-    image: docker-redis
-    container_name: redis
-    volumes:
-      - Z:/redis:/data
-    expose:
-      - 6379
-    ports:
-      - 6379:6379
+  # mongo:
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./mongo
+  #     dockerfile: Dockerfile
+  #   image: docker-mongo
+  #   container_name: mongo
+  #   volumes:
+  #     - Z:/mongo/data/db:/data/db
+  #     - Z:/mongo/data/configdb:/data/configdb
+  #   expose:
+  #     - 27017
+  #   ports:
+  #     - 27018:27017
+  # redis:
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./redis
+  #     dockerfile: Dockerfile
+  #   image: docker-redis
+  #   container_name: redis
+  #   volumes:
+  #     - Z:/redis:/data
+  #   expose:
+  #     - 6379
+  #   ports:
+  #     - 6379:6379
   # node1:
   #   restart: on-failure:5
   #   build:
@@ -92,63 +92,51 @@ services:
     build:
       context: ./nest
       dockerfile: Dockerfile
-      # target: base
     image: docker-nest
     container_name: nest-1
-    environment:
-      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./nest:/usr/src/app
     expose:
       - 4000
     ports:
       - 8081:4000
-    dns:
-      - 8.8.8.8
     command: yarn start:dev
     depends_on:
-      - mongo
+      # - mongo
       - mysql
-  nest-2:
-    restart: on-failure:5
-    build:
-      context: ./nest
-      dockerfile: Dockerfile
-      # target: base
-    image: docker-nest
-    container_name: nest-2
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    volumes:
-      - ./nest:/usr/src/app
-    expose:
-      - 4000
-    ports:
-      - 8082:4000
-    # networks:
-      # - networkName
-    dns:
-      - 8.8.8.8
-    command: yarn start:dev
-    depends_on:
-      - mongo
-      - mysql
-  web:
-    restart: on-failure:5
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-      # target: base
-    image: docekr-web
-    container_name: web-1
-    volumes:
-      - ./web:/home/node/app
-      - ./web/nodemon.json:/home/node/app/nodemon.json
-    expose:
-      - 3000
-    ports:
-      - 8080:3000
-    command: yarn dev
+  # nest-2:
+  #   restart: on-failure:5
+  #   build:
+  #     context: ./nest
+  #     dockerfile: Dockerfile
+  #   image: docker-nest
+  #   container_name: nest-2
+  #   volumes:
+  #     - ./nest:/usr/src/app
+  #   expose:
+  #     - 4000
+  #   ports:
+  #     - 8082:4000
+  #   command: yarn start:dev
+  #   depends_on:
+  #     - mongo
+  #     - mysql
+  # web:
+  #   restart: on-failure:5
+  #   build:
+  #     context: ./web
+  #     dockerfile: Dockerfile
+  #     # target: base
+  #   image: docekr-web
+  #   container_name: web-1
+  #   volumes:
+  #     - ./web:/home/node/app
+  #     - ./web/nodemon.json:/home/node/app/nodemon.json
+  #   expose:
+  #     - 3000
+  #   ports:
+  #     - 8080:3000
+  #   command: yarn dev
     # depends_on:
       # - node1
       # - node2

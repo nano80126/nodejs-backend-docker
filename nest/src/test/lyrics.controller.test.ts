@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LyricsController } from '@/controllers/lyrics.controller';
 import { LyricsService } from '@/services/lyrics.service';
 import { expect } from 'chai';
 import { CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
-
-console.log(__dirname);
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Lyrics } from '@/entities/lyrics.entity';
 
 // "test": "mocha -r ts-node/register -r tsconfig-paths/register",
 
@@ -20,6 +21,7 @@ describe('LyricsController', () => {
 		}).compile();
 
 		lyricsService = moduleRef.get<LyricsService>(LyricsService);
+		// lyricsService = await moduleRef.resolve(LyricsService);
 		lyricsController = moduleRef.get<LyricsController>(LyricsController);
 	});
 

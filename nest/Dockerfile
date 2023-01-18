@@ -1,17 +1,14 @@
-FROM node:18-alpine
+FROM node:18.13-alpine
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-# RUN yarn global add @nestjs/cli
+# RUN yarn install
 
-RUN yarn install 
-# && yarn cache clean
+# COPY . .
 
-COPY . .
-
-EXPOSE 4000
+# EXPOSE 4000
 
 # CMD ["yarn", "dev"]
 
