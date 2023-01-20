@@ -76,13 +76,14 @@ export class LyricsService {
 	}
 
 	/**
-	 * 123
+	 * @param artist 歌手
+	 * @param song 歌曲名
 	 * @returns
 	 */
-	async saveSearchRecord() {
+	async saveSearchRecord(artist: string, song: string) {
 		return this.lyricsRespository.save({
-			artist: '123',
-			song: '456',
+			artist: artist,
+			song: song,
 		});
 	}
 

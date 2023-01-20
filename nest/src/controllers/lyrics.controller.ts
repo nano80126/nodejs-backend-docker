@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Query, Param } from '@nestjs/common';
+import { Controller, Req, Res, Query, Param, HttpStatus } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { LyricsService } from '@/services/lyrics.service';
 import { SearchLyricsDto, SearchLyricsRecordDto } from '@/abstract/interface/lyrics.interface';
@@ -9,26 +9,22 @@ export class LyricsController {
 	constructor(private readonly lyricsService: LyricsService) {}
 
 	@Get()
-	async getLyricsList(@Res() reply: FastifyReply, @Query() searchLyricsDot: SearchLyricsDto) {
+	async getLyricsList(@Res() res: FastifyReply, @Query() searchLyricsDot: SearchLyricsDto) {
 		const { artist, title } = searchLyricsDot;
-		const res = await this.lyricsService.getLyricsList(artist, title);
+		const result = await this.lyricsService.getLyricsList(artist, title);
 
-		console.log(artist, title);
-
-		if (!res.error) {
-			// const save = await this.lyricsService.saveSearchRecord(title, 'title');
+		if (result.error) {
+			return res.status(HttpStatus.INTERNAL_SERVER_ERROR);
 		} else {
-			//
+			await this.lyricsService.saveSearchRecord(artist, title);
+			return res.status(HttpStatus.OK).send(result);
 		}
-
-		return reply.status(200).send(res);
 	}
 
 	@Post()
 	async createLyricsRecord(@Body() dto: SearchLyricsRecordDto) {
-		console.log(dto);
-
-		return await this.lyricsService.saveSearchRecord();
+		const { artist, title } = dto;
+		return await this.lyricsService.saveSearchRecord(artist, title);
 	}
 
 	@Get('/:lyricsID')

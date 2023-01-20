@@ -21,7 +21,6 @@ describe('LyricsController', () => {
 		}).compile();
 
 		lyricsService = moduleRef.get<LyricsService>(LyricsService);
-		// lyricsService = await moduleRef.resolve(LyricsService);
 		lyricsController = moduleRef.get<LyricsController>(LyricsController);
 	});
 

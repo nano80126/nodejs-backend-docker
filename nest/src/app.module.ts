@@ -16,6 +16,7 @@ const typeOrnRoot = TypeOrmModule.forRoot({
 	retryAttempts: 3,
 	entities: [Lyrics],
 	synchronize: true,
+	timezone: '-08:00',
 });
 
 @Module({

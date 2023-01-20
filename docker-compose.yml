@@ -1,17 +1,6 @@
 version: "3.7"
 
 services:
-  # nginx:
-  #   restart: on-failure:5
-  #   build:
-  #     context: ./nginx
-  #     dockerfile: Dockerfile
-  #   image: docker-nginx
-  #   container_name: nginx
-  #   expose:
-  #     - 80
-  #   ports:
-  #     - 8888:80
   mysql:
     restart: unless-stopped
     build:
@@ -87,6 +76,19 @@ services:
   #   depends_on:
   #     - mongo
   #     - mysql
+  nginx:
+    restart: on-failure:5
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: docker-nginx
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    expose:
+      - 80
+    ports:
+      - 8888:80
   nest-1:
     restart: on-failure:5
     build:
@@ -119,7 +121,7 @@ services:
   #     - 8082:4000
   #   command: yarn start:dev
   #   depends_on:
-  #     - mongo
+  #     # - mongo
   #     - mysql
   # web:
   #   restart: on-failure:5
