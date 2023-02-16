@@ -123,22 +123,22 @@ services:
   #   depends_on:
   #     # - mongo
   #     - mysql
-  # web:
-  #   restart: on-failure:5
-  #   build:
-  #     context: ./web
-  #     dockerfile: Dockerfile
-  #     # target: base
-  #   image: docekr-web
-  #   container_name: web-1
-  #   volumes:
-  #     - ./web:/home/node/app
-  #     - ./web/nodemon.json:/home/node/app/nodemon.json
-  #   expose:
-  #     - 3000
-  #   ports:
-  #     - 8080:3000
-  #   command: yarn dev
-    # depends_on:
-      # - node1
+  web:
+    restart: on-failure:5
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      # target: base
+    image: docekr-web
+    container_name: web-1
+    volumes:
+      - ./web:/home/node/app
+      - ./web/nodemon.json:/home/node/app/nodemon.json
+    expose:
+      - 3000
+    ports:
+      - 8080:3000
+    command: yarn dev
+    depends_on:
+      - nest-1
       # - node2

@@ -1,13 +1,13 @@
-FROM node:18-alpine
+FROM node:18.13-alpine
 
 WORKDIR /home/node/app
 
-COPY package*.json yarn.lock ./
+COPY package*.json ./
 
-RUN yarn install 
+# RUN yarn install
 # && yarn cache clean
 
-COPY . .
+# COPY . .
 
 EXPOSE 3000
 
