@@ -20,22 +20,18 @@ export class LyricsService {
 	 * @param song 歌曲名
 	 */
 	async getLyricsList(artist: string, song: string) {
-		const result: { error?: Error | null; data: Array<SearchLyricsResponseDto> } = {
-			data: [],
-		};
+		const result: { error?: Error; data?: Array<SearchLyricsResponseDto> } = {};
 		try {
-			const opt = {
-				sort: null,
-				artist_name: artist,
-				title: song,
-				show_artist: 1,
-			};
-
 			const dom = await axios.get('https://utaten.com/lyric/search', {
 				headers: {},
 				responseType: 'json',
 				responseEncoding: 'utf8',
-				params: opt,
+				params: {
+					sort: null,
+					artist_name: artist,
+					title: song,
+					show_artist: 1,
+				},
 			});
 
 			// 拆解 DOM
@@ -44,6 +40,7 @@ export class LyricsService {
 			const table = title.next('div.contentBox__body').children('table');
 			const trs = table.children('tbody').children('tr');
 
+			result.data = [];
 			for (let i = 0; i < trs.length; i++) {
 				if (trs.eq(i).children('td').length >= 2) {
 					const td1 = trs.eq(i).children('td:first');
@@ -70,7 +67,7 @@ export class LyricsService {
 				}
 			}
 		} catch (err) {
-			result.error = err as Error;
+			result.error = err;
 		}
 		return result;
 	}
@@ -131,7 +128,7 @@ export class LyricsService {
 				},
 			});
 		} catch (err) {
-			result.error = err as Error;
+			result.error = err;
 		}
 		return result;
 	}

@@ -20,6 +20,8 @@
 	},
 	"dependencies": {
 		"@fastify/static": "^6.6.1",
+		"@fastify/swagger": "^8.3.0",
+		"@googleapis/youtube": "^8.0.1",
 		"@nestjs/common": "^9.2.1",
 		"@nestjs/core": "^9.2.1",
 		"@nestjs/platform-express": "^9.2.1",
@@ -29,6 +31,7 @@
 		"axios": "^1.2.2",
 		"cheerio": "^1.0.0-rc.12",
 		"fastify": "^4.11.0",
+		"moment": "^2.29.4",
 		"mysql2": "^3.0.0",
 		"reflect-metadata": "^0.1.13",
 		"rxjs": "^7.8.0",

@@ -11,7 +11,7 @@ const ip = process.env.IP || '127.0.0.1';
 async function bootstrap() {
 	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
 		cors: {
-			origin: 'http://localhost:3000',
+			origin: ['http://localhost:3000', 'http://localhost:3001'],
 		},
 	});
 
@@ -19,7 +19,8 @@ async function bootstrap() {
 		.setTitle('Lyrics example')
 		.setDescription('The lyrics API description')
 		.setVersion('1.0')
-		.addTag('lyrics')
+		.addTag('Lyrics')
+		.addTag('YouTube')
 		.build();
 
 	const document = SwaggerModule.createDocument(app, config);
