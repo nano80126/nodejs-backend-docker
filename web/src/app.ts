@@ -23,7 +23,15 @@ server.get('/', async (req: FastifyRequest, reply: FastifyReply) => {
 });
 
 server.get('/ping', async (req: FastifyRequest, reply: FastifyReply) => {
-	return reply.status(200).send('web pong\n');
+	reply.status(200).send('web pong\n');
+});
+
+server.get('/test', async (req: FastifyRequest, reply: FastifyReply) => {
+	reply.status(400).send('get test status\n');
+});
+
+server.post('/test', async (req: FastifyRequest, reply: FastifyReply) => {
+	reply.status(400).send('post test status\n');
 });
 
 // server.route({
