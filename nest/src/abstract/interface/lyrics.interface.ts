@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 /**搜尋歌詞列表 REQ DTO */
-export class SearchLyricsDto {
+export class SearchLyricsReqDTO {
 	@ApiProperty({ maxLength: 20, required: false, description: '歌手名' })
 	artist?: string;
 	@ApiProperty({ maxLength: 20, required: false, description: '歌名' })
 	title?: string;
 }
 
-export class SearchLyricsRecordDto extends SearchLyricsDto {
+export class SearchLyricsRecordDto extends SearchLyricsReqDTO {
 	@ApiProperty()
 	insertTime: Date;
 }
 
 /**搜尋歌詞列表 REP DTO */
-export class SearchLyricsResponseDto extends SearchLyricsDto {
+export class SearchLyricsResponseDto extends SearchLyricsReqDTO {
 	@ApiProperty()
 	id: number;
 	@ApiProperty()
@@ -36,5 +36,25 @@ export class CrawlLyricsResponseDto {
 	@ApiProperty()
 	lyrcisUrl: string;
 	@ApiProperty()
-	lyricsContent: string;
+	lyrics: string;
 }
+
+/**儲存歌詞 REQ DTO */
+export class SaveLyricsReqDTO {
+	@ApiProperty({ maxLength: 10, required: true, description: '歌詞ID' })
+	lyrics_key: string;
+
+	// @ApiProperty({ maxLength: 11, required: false, description: 'video ID' })
+	// video_id: string;
+
+	@ApiProperty({ maxLength: 20, required: true, description: '(原)演唱者' })
+	artist: string;
+
+	@ApiProperty({ maxLength: 20, required: true, description: '歌曲名' })
+	song: string;
+
+	@ApiProperty({ required: true, description: '歌詞' })
+	lyrics: string;
+}
+
+export class UpdateLyricsReqDTO {}

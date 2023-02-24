@@ -5,17 +5,22 @@ import { Repository } from 'typeorm';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
-import { Lyrics } from '@/entities/lyrics.entity';
+// import { Lyrics } from '@/entities/lyrics.entity';
+import { SearchRecord, Lyrics } from '@/entities/lyrics.entity';
+import { retry } from 'rxjs';
 
 @Injectable()
 export class LyricsService {
 	constructor(
 		@InjectRepository(Lyrics)
-		private lyricsRespository: Repository<Lyrics>,
+		private lyricsListRespository: Repository<Lyrics>,
+
+		@InjectRepository(SearchRecord)
+		private searchRecordRespository: Repository<SearchRecord>,
 	) {}
 
 	/**
-	 *
+	 * 爬蟲爬取歌詞列表
 	 * @param artist 歌手
 	 * @param song 歌曲名
 	 */
@@ -78,14 +83,19 @@ export class LyricsService {
 	 * @returns
 	 */
 	async saveSearchRecord(artist: string, song: string) {
-		return this.lyricsRespository.save({
-			artist: artist,
-			song: song,
-		});
+		try {
+			return this.lyricsListRespository.save({
+				artist: artist,
+				song: song,
+			});
+		} catch (error) {
+			const { code, errno, sqlState, sqlMessage } = error;
+			return { code, errno, sqlState, sqlMessage };
+		}
 	}
 
 	/**
-	 *
+	 * 爬蟲爬取歌詞內容
 	 * @param lyricsID 歌詞 ID
 	 * @returns
 	 */
@@ -124,7 +134,7 @@ export class LyricsService {
 					title: tTitle,
 					lyricsID: lyricsID,
 					lyrcisUrl: `/lyric/${lyricsID}/`,
-					lyricsContent: lyricsContent,
+					lyrics: lyricsContent,
 				},
 			});
 		} catch (err) {
@@ -132,4 +142,45 @@ export class LyricsService {
 		}
 		return result;
 	}
+
+	// #region
+	/**
+	 * 儲存歌詞內容進資料庫
+	 * @param lyrics_id 歌詞ID
+	 * @param artist 演唱者
+	 * @param song 歌名
+	 * @param lyrics 歌詞內容
+	 * @returns
+	 */
+	async saveLyrics(lyrics_key: string, artist: string, song: string, lyrics: string) {
+		try {
+			return await this.lyricsListRespository.save({
+				lyrics_key,
+				artist,
+				song,
+				lyrics,
+			});
+		} catch (error) {
+			const { code, errno, sqlState, sqlMessage } = error;
+			return { code, errno, sqlState, sqlMessage };
+		}
+	}
+
+	/** */
+	async updateLyrics(lyrics_id: string, video_ids: string[]) {
+		//
+
+		return;
+	}
+
+	/**
+	 * 從資料庫取得歌詞
+	 * @param lyrics_id 歌詞ID
+	 * @returns
+	 */
+	async getLyrics(lyrics_id: string) {
+		return '';
+	}
+
+	// #endregion
 }

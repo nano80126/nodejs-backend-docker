@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LyricsController } from '@/controllers/lyrics.controller';
 import { LyricsService } from '@/services/lyrics.service';
-import { Lyrics } from '@/entities/lyrics.entity';
+import { SearchRecord, Lyrics } from '@/entities/lyrics.entity';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Lyrics])],
+	imports: [TypeOrmModule.forFeature([SearchRecord, Lyrics])],
 	controllers: [LyricsController],
 	providers: [LyricsService],
 	// exports: [TypeOrmModule],

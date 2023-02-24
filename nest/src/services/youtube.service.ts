@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { youtube, youtube_v3 } from '@googleapis/youtube';
 import { YouTubeInfoResDTO, YouTubeThumbnailDTO } from '@/abstract/interface/youtube.interface';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class YouTubeService {
