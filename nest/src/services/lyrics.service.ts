@@ -7,16 +7,15 @@ import cheerio from 'cheerio';
 import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
 // import { Lyrics } from '@/entities/lyrics.entity';
 import { SearchRecord, Lyrics } from '@/entities/lyrics.entity';
-import { retry } from 'rxjs';
 
 @Injectable()
 export class LyricsService {
 	constructor(
 		@InjectRepository(Lyrics)
-		private lyricsListRespository: Repository<Lyrics>,
+		private lyricsListRepository: Repository<Lyrics>,
 
 		@InjectRepository(SearchRecord)
-		private searchRecordRespository: Repository<SearchRecord>,
+		private searchRecordRepository: Repository<SearchRecord>,
 	) {}
 
 	/**
@@ -84,10 +83,27 @@ export class LyricsService {
 	 */
 	async saveSearchRecord(artist: string, song: string) {
 		try {
-			return this.lyricsListRespository.save({
-				artist: artist,
-				song: song,
-			});
+			// return this.searchRecordRespository
+			// 	.createQueryBuilder()
+			// 	.insert()
+			// 	.into(SearchRecord)
+			// 	.values({ artist, song })
+			// 	.orUpdate(['update_time'], ['song', 'artist'])
+			// 	.execute();
+			// or .getSql();
+
+			return this.searchRecordRepository.upsert(
+				{
+					song: song,
+					artist: artist,
+					update_time: () => 'CURRENT_TIMESTAMP',
+				},
+				['song', 'artist'],
+			);
+			// return this.searchRecordRespository.save({
+			// 	artist: artist,
+			// 	song: song,
+			// });
 		} catch (error) {
 			const { code, errno, sqlState, sqlMessage } = error;
 			return { code, errno, sqlState, sqlMessage };
@@ -154,7 +170,7 @@ export class LyricsService {
 	 */
 	async saveLyrics(lyrics_key: string, artist: string, song: string, lyrics: string) {
 		try {
-			return await this.lyricsListRespository.save({
+			return await this.lyricsListRepository.save({
 				lyrics_key,
 				artist,
 				song,

@@ -5,6 +5,7 @@ import { Body, Get, Post } from '@nestjs/common/decorators';
 import { YouTubeSearchListDTO } from '@/abstract/interface/youtube.interface';
 import { YouTubeService } from '@/services/youtube.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { SaveYouTubeReqDTO } from '@/abstract/interface/youtube.interface';
 // import {} from
 
 @ApiTags('YouTube')
@@ -51,5 +52,12 @@ export class YouTubeController {
 		} else {
 			return res.status(HttpStatus.OK).send(result.data);
 		}
+	}
+
+	@ApiOkResponse({ status: HttpStatus.OK, description: '' })
+	@Post()
+	async saveYoutTube(@Res() res: FastifyReply, @Body() saveYouTubeReqDto: SaveYouTubeReqDTO) {
+		//
+		// const
 	}
 }

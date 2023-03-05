@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import fastifyCookie from '@fastify/cookie';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -13,6 +14,10 @@ async function bootstrap() {
 		cors: {
 			origin: ['http://localhost:3000', 'http://localhost:3001'],
 		},
+	});
+
+	await app.register(fastifyCookie, {
+		secret: 'my-secret',
 	});
 
 	const config = new DocumentBuilder()

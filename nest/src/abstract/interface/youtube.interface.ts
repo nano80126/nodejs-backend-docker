@@ -18,3 +18,5 @@ export class YouTubeThumbnailDTO {
 	width: number;
 	height: number;
 }
+
+export class SaveYouTubeReqDTO {}

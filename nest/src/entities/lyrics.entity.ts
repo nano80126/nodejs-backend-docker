@@ -1,6 +1,8 @@
+import { index } from 'cheerio/lib/api/traversing';
 import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
 import { Video } from './video.entity';
 
+/**搜尋歌詞 entity */
 @Entity()
 @Index(['song', 'artist'], { unique: true })
 export class SearchRecord {
@@ -13,11 +15,16 @@ export class SearchRecord {
 	@Column({ type: 'varchar', length: 20 })
 	artist: string;
 
-	@Index()
+	@Index('updateTime')
+	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+	'update_time': Date;
+
+	@Index('insertTime')
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 	'insert_time': Date;
 }
 
+/**儲存歌詞 entity */
 @Entity()
 @Index(['artist', 'song'], { unique: true })
 // @Index([])

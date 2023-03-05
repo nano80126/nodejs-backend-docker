@@ -14,12 +14,10 @@ export class YouTubeService {
 		});
 	}
 
-	// yt = youtube('v3');
-
 	/**
-	 *
+	 * 搜尋 youtube
 	 * @param queryString 搜尋關鍵字
-	 * @param pageToken 上/下一頁
+	 * @param pageToken 上/下一頁 pagetoken
 	 */
 	async getSearchList(queryString: string, pageToken?: string) {
 		const result: { error?: Error; data?: youtube_v3.Schema$SearchListResponse } = {};
@@ -40,6 +38,11 @@ export class YouTubeService {
 		return result;
 	}
 
+	/**
+	 * 取得 video HD/SD, 2D/3D, duraction, embeddable
+	 * @param videoID youtube video ID
+	 * @returns
+	 */
 	async getVideoInfo(videoID: string) {
 		const result: { error?: Error; data?: YouTubeInfoResDTO } = {};
 
@@ -70,6 +73,11 @@ export class YouTubeService {
 		return result;
 	}
 
+	/**
+	 * 取得 thumbnail
+	 * @param videoID youtube video ID
+	 * @returns
+	 */
 	async getVideoThumbnail(videoID: string) {
 		const result: { error?: Error; data?: YouTubeThumbnailDTO } = {};
 
@@ -95,5 +103,9 @@ export class YouTubeService {
 			result.error = err;
 		}
 		return result;
+	}
+
+	async saveVideo() {
+		//
 	}
 }
