@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
-import { Lyrics } from './lyrics.entity';
+import { Lyrics } from '@/modules/lyrics/lyrics.entity';
 
 @Entity()
 export class Video {

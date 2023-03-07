@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import axios from 'axios';
 import cheerio from 'cheerio';
-import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
+import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/modules/lyrics/dto/lyrics.interface';
 // import { Lyrics } from '@/entities/lyrics.entity';
-import { SearchRecord, Lyrics } from '@/entities/lyrics.entity';
+import { SearchRecord, Lyrics } from './lyrics.entity';
 
 @Injectable()
 export class LyricsService {

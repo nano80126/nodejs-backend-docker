@@ -4,8 +4,8 @@ import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { FastifyReply } from 'fastify';
 
-import { LyricsService } from '@/services/lyrics.service';
-import { SearchLyricsReqDTO, SaveLyricsReqDTO, UpdateLyricsReqDTO } from '@/abstract/interface/lyrics.interface';
+import { LyricsService } from './lyrics.service';
+import { SearchLyricsReqDTO, SaveLyricsReqDTO, UpdateLyricsReqDTO } from '@/modules/lyrics/dto/lyrics.interface';
 
 @ApiTags('Lyrics')
 @Controller('lyrics')

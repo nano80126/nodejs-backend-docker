@@ -2,7 +2,7 @@ import { Controller, Req, Res, Query, Param, Body, HttpStatus } from '@nestjs/co
 import { Get, Post, Patch, Headers } from '@nestjs/common/decorators';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AuthService } from '@/services/auth.service';
+import { AuthService } from './auth.service';
 import { FastifyReply } from 'fastify';
 import { IncomingHttpHeaders } from 'http';
 

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LyricsController } from '@/controllers/lyrics.controller';
-import { LyricsService } from '@/services/lyrics.service';
+import { LyricsController } from './lyrics.controller';
+import { LyricsService } from './lyrics.service';
 import { expect } from 'chai';
-import { CrawlLyricsResponseDto } from '@/abstract/interface/lyrics.interface';
+import { CrawlLyricsResponseDto } from '@/modules/lyrics/dto/lyrics.interface';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { Lyrics } from '@/entities/lyrics.entity';
 

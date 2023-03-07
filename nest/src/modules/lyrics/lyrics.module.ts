@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { LyricsController } from '@/controllers/lyrics.controller';
-import { LyricsService } from '@/services/lyrics.service';
-import { SearchRecord, Lyrics } from '@/entities/lyrics.entity';
+import { LyricsController } from './lyrics.controller';
+import { LyricsService } from './lyrics.service';
+import { SearchRecord, Lyrics } from './lyrics.entity';
 
 @Module({
 	imports: [TypeOrmModule.forFeature([SearchRecord, Lyrics])],

@@ -4,11 +4,21 @@ import { Repository } from 'typeorm';
 
 import axios from 'axios';
 import jsonwebtoken from 'jsonwebtoken';
+import { UsersService } from '@/users/users.service';
+import { use } from 'chai';
 
 @Injectable()
 export class AuthService {
-	constructor() {
+	constructor(private readonly usersService: UsersService) {
 		//
+	}
+
+	async validateUser(username: string, password: string) {
+		const user = await this.usersService.findOne(username);
+
+		console.log(user);
+
+		return user;
 	}
 
 	async createAuthToken(payload: { uid: string }) {

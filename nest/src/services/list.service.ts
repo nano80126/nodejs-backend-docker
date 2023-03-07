@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import axios from 'axios';
-import inject from 'light-my-request';
-import { SearchRecord } from '@/entities/lyrics.entity';
+import { SearchRecord } from '@/modules/lyrics/lyrics.entity';
 import { SearchRecordResDTO } from '@/abstract/interface/list.interface';
 
 @Injectable()
@@ -35,8 +34,6 @@ export class ListService {
 				},
 				take: 3,
 			});
-
-			console.log(data);
 
 			result.data = data.map((e) => {
 				return {

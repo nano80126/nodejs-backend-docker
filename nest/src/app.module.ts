@@ -7,13 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { SearchRecord, Lyrics } from './deprecated/index';
 // import { SearchController } from './controllers/search.controller';
 // import { SearchService } from './services/search.service';
-import { AuthModule } from './modules/auth.module';
-import { LyrcisModule } from '@/modules/lyrics.module';
+import { AuthModule } from '@/auth/auth.module';
+import { LyrcisModule } from '@/modules/lyrics/lyrics.module';
 import { YouTubeModule } from '@/modules/youtube.module';
 import { SearchModule } from '@/modules/search.module';
 import { ListModule } from './modules/list.module';
+import { UsersModule } from './users/users.module';
 
-const typeOrnRoot = TypeOrmModule.forRoot({
+const typeOrmRoot = TypeOrmModule.forRoot({
 	type: 'mariadb',
 	host: 'mariadb',
 	port: 3306,
@@ -22,7 +23,7 @@ const typeOrnRoot = TypeOrmModule.forRoot({
 	database: 'youtube_player',
 	retryAttempts: 3,
 	// entities: ['./entities/index.ts'],
-	entities: [__dirname + '/entities/*.entity{.ts,.js}'],
+	entities: [__dirname + '/**/*.entity{.ts,.js}'],
 	// autoLoadEntities: true,
 	synchronize: true,
 	timezone: '-08:00',
@@ -31,7 +32,7 @@ const typeOrnRoot = TypeOrmModule.forRoot({
 // console.log(__dirname);
 
 @Module({
-	imports: [typeOrnRoot, AuthModule, LyrcisModule, YouTubeModule, SearchModule, ListModule],
+	imports: [typeOrmRoot, AuthModule, UsersModule, LyrcisModule, YouTubeModule, SearchModule, ListModule, UsersModule],
 	controllers: [AppController],
 	providers: [AppService],
 })

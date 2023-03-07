@@ -1,26 +1,25 @@
-import { index } from 'cheerio/lib/api/traversing';
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
-import { Video } from './video.entity';
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, PrimaryColumn, Generated } from 'typeorm';
+import { Video } from '@/entities/video.entity';
 
 /**搜尋歌詞 entity */
 @Entity()
-@Index(['song', 'artist'], { unique: true })
+// @Index(['song', 'artist'], { unique: true })
 export class SearchRecord {
-	@PrimaryGeneratedColumn()
-	id: number;
+	@PrimaryGeneratedColumn('uuid')
+	id: string;
 
-	@Column({ type: 'varchar', length: 20 })
+	@Column({ type: 'varchar', length: 20, comment: '123' })
 	song: string;
 
-	@Column({ type: 'varchar', length: 20 })
+	@Column({ type: 'varchar', length: 20, comment: '456' })
 	artist: string;
 
-	@Index('updateTime')
-	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+	// @Index('updateTime')
+	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', comment: '' })
 	'update_time': Date;
 
-	@Index('insertTime')
-	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+	// @Index('insertTime')
+	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', comment: '' })
 	'insert_time': Date;
 }
 
@@ -31,6 +30,10 @@ export class SearchRecord {
 export class Lyrics {
 	@PrimaryGeneratedColumn()
 	id: number;
+
+	// @Column()
+	// @Generated('uuid')
+	// uuid: string;
 
 	@Index({ unique: true })
 	@Column({ type: 'varchar', length: 10 })
