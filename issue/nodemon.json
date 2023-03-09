@@ -1,0 +1,4 @@
+{
+	"varbose": true,
+	"ingore": ["*.test.js"]
+}
