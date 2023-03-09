@@ -1,0 +1,25 @@
+{
+	"eslint.validate": ["javascript", "javascriptreact"],
+	"editor.detectIndentation": false,
+	"editor.tabSize": 4,
+	"editor.formatOnSave": false, // true會衝突 // prettier & eslint
+	"editor.codeActionsOnSave": {
+		"source.fixAll": false,
+		"source.fixAll.eslint": true // 由 eslint 整理，但為prettier設定
+	},
+	"[json]": {
+        // 針對 json
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"editor.formatOnSave": true, 
+	},
+	"[javascript]": {
+        // 針對 .prettierrc.js & .eslintrc.js
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"editor.formatOnSave": true, 
+	},
+	"[typescript]":{
+        // 針對 ts
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true, 
+	},
+}

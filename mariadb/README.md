@@ -8,11 +8,17 @@ openssl genrsa 2048 > ca-key.pem
 
 # 產生 CA 證書 / generate the certificate 
 openssl req -new -x509 -nodes -days 365000 -key ca-key.pem -out ca-cert.pem
+
+# 設定 Common Name Field 為 MariaDB admin
+Common Name (eg, fully qualified host name) []:MariaDB admin
 ```
 ## Create the server SSL certificate
 ```
 # 產生伺服器私鑰 / to create the server key
 openssl req -newkey rsa:2048 -days 365000 -nodes -keyout server-key.pem -out server-req.pem
+
+# 設定 Common Name Field 為 MariaDB server
+Common Name (eg, fully qualified host name) []:MariaDB server
 
 # 轉成 rsa 類型私鑰 / process the server RSA key
 openssl rsa -in server-key.pem -out server-key.pem
@@ -25,6 +31,9 @@ openssl x509 -req -in server-req.pem -days 365000 -CA ca-cert.pem -CAkey ca-key.
 ```
 # 產生 client 私鑰 / create the client key
 openssl req -newkey rsa:2048 -days 365000 -nodes -keyout client-key.pem -out client-req.pem
+
+# 設定 Common Name Field 為 MariaDB user
+Common Name (eg, fully qualified host name) []:MariaDB user
 
 # 轉成 rsa 類型私鑰 / process client RSA key
 openssl rsa -in client-key.pem -out client-key.pem

@@ -1,32 +1,13 @@
+# NestJS
+/dist
+/node_modules
+.env
+
 # Logs
 logs
 *.log
 
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Build directories
-dist/
-build/
-out/
-target/
-
-# Environment variables
-.env
-.env.*
-
-# Testing
-coverage/
-
-# IDE files
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
+# OS generated files
+.DS_Store*
 Thumbs.db
 
-# pem files
-ssl/
-*.pem
