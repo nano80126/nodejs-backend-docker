@@ -12,21 +12,22 @@ import { convertDateArr } from './utils/iov';
 import { Server as ioServer } from 'socket.io';
 import { io as ioClient } from 'socket.io-client';
 
-import { KWCarNaviDirectiosDTO } from 'dtos/kw.interface';
+import { KWCarNaviDirectiosDTO } from './dtos/kw.interface';
 
 // routeds
 import coldchainRouter from './routes/codechain.route';
-import { JourneyReportListReqDTO } from 'dtos/journey.interface';
+import { JourneyReportListReqDTO } from './dtos/journey.interface';
 
-// import { startSocket } from './socket';
+import { initSocketIO } from './socket';
 
 // 載入 .env
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = new ioServer().listen(server);
-const client = ioClient('ws://127.0.0.1:3000');
+// const io = new ioServer().listen(server);
+const client1 = ioClient('ws://127.0.0.1:3000/user');
+const client2 = ioClient('ws://127.0.0.1:3000/admin');
 
 app.use(express.json());
 app.use(
@@ -80,10 +81,18 @@ app.get('/time-format', (req, res) => {
 
 app.use('/coldchain/', coldchainRouter);
 
+app.get('/socket/joinroom', async (req, res) => {
+	const client = ioClient('ws://127.0.0.1:3000/user');
+	client.connect();
+
+	res.status(200).send('new user');
+});
+
 app.get('/send/message', async (req, res) => {
 	const { a, b, c } = req.query;
 
-	client.emit('subscribe', { a, b, c });
+	client1.emit('subscribe', { a, b, c });
+	client1.emit('subscribe', { b, a, c: a });
 
 	res.status(200).send({});
 });
@@ -101,8 +110,6 @@ app.post('/geo/directions', async (req, res) => {
 	const startTime = new Date().getTime();
 	const kwresult = (await doGet(reqRoutes)) as KWCarNaviDirectiosDTO;
 	const kw_diff = new Date().getTime() - startTime;
-
-	console.log(kwresult);
 
 	const data: {
 		totalDistance: number;
@@ -244,20 +251,40 @@ server.listen(port, host, () => {
 	console.log(`server listen at ${host}:${port}`);
 });
 
-io.on('connection', (socket) => {
-	console.log('one user connected', socket.id);
+initSocketIO(server);
 
-	socket.on('disconnect', () => {
-		console.log('one user disconnected');
-	});
+// io.of('/ws').on('connection', (socket) => {
+// 	console.log('one user connected', socket.id);
 
-	socket.on('subscribe', (msg) => {
-		console.log(msg);
-	});
-});
+// 	socket.use((packet, next) => {
+// 		// packet[0] : channel name, packet[1] : payload
+// 		if (typeof packet[1] === 'string') {
+// 			packet[1] = JSON.parse(packet[1]);
+// 		}
+// 		next();
+// 	});
+
+// 	socket.on('disconnect', () => {
+// 		console.log('one user disconnected');
+// 	});
+
+// 	socket.on('subscribe', (msg) => {
+// 		console.log(msg);
+// 	});
+// });
 
 setTimeout(() => {
-	client.connect();
+	const socketRes1 = client1.connect();
+	const socketRes2 = client2.connect();
+
+	setTimeout(() => {
+		const { connected } = socketRes1;
+		console.log(connected);
+		console.log(socketRes2.connected);
+	}, 1000);
 }, 1000);
 
-export { app, io };
+console.log(new Date());
+console.log(new Date().getTime());
+
+export { app, server };
