@@ -31,12 +31,14 @@ export const initSocketIO = (expressServer: Server) => {
 		});
 	});
 
-	io.of(userSpace).on('connection', (socket) => {
+	io.of(userSpace).on('connection', async (socket) => {
 		console.log(`one user connected ${socket.id}`);
 
-		socket.join('room');
+		socket.join(['room1', 'room2', 'room3']);
 
-		console.log(io.sockets.adapter.rooms['room'].length);
+		// const room1 = io.of(userSpace).in('room1');
+
+		// io.in("room1").disconnectSockets()
 
 		socket.use((packet, next) => {
 			if (typeof packet[1] == 'string') {
@@ -45,7 +47,7 @@ export const initSocketIO = (expressServer: Server) => {
 			next();
 		});
 
-		socket.on('disconnected', () => {
+		socket.on('disconnect', () => {
 			console.log('one user disconnected');
 		});
 
@@ -53,6 +55,15 @@ export const initSocketIO = (expressServer: Server) => {
 			console.log(msg);
 		});
 	});
+
+	setInterval(async () => {
+		const room1 = io.of(userSpace).in('room1');
+		const room2 = io.of(userSpace).in('room2');
+
+		const [room1Clients, room2Clients] = [await room1.fetchSockets(), await room2.fetchSockets()];
+
+		console.log(room1Clients.length, room2Clients.length);
+	}, 5000);
 };
 
 // export const startSocket = () => {
