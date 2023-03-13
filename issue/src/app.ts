@@ -6,7 +6,6 @@ import express from 'express';
 import http from 'http';
 import moment from 'moment';
 import mariadb from 'mariadb';
-import { orderBy } from 'lodash';
 import { waApiKey, doGet } from './utils/kwapi';
 import { convertDateArr } from './utils/iov';
 import { Server as ioServer } from 'socket.io';
@@ -84,6 +83,10 @@ app.use('/coldchain/', coldchainRouter);
 app.get('/socket/joinroom', async (req, res) => {
 	const client = ioClient('ws://127.0.0.1:3000/user');
 	client.connect();
+
+	setTimeout(() => {
+		client.disconnect();
+	}, 1000 * 10);
 
 	res.status(200).send('new user');
 });
@@ -276,15 +279,11 @@ initSocketIO(server);
 setTimeout(() => {
 	const socketRes1 = client1.connect();
 	const socketRes2 = client2.connect();
-
-	setTimeout(() => {
-		const { connected } = socketRes1;
-		console.log(connected);
-		console.log(socketRes2.connected);
-	}, 1000);
+	// setTimeout(() => {
+	// 	const { connected } = socketRes1;
+	// 	console.log(connected);
+	// 	console.log(socketRes2.connected);
+	// }, 1000);
 }, 1000);
-
-console.log(new Date());
-console.log(new Date().getTime());
 
 export { app, server };
