@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import axios from 'axios';
-import cheerio from 'cheerio';
-import { SearchLyricsResponseDto, CrawlLyricsResponseDto } from '@/modules/lyrics/dto/lyrics.interface';
-// import { Lyrics } from '@/entities/lyrics.entity';
-import { SearchRecord, Lyrics } from './lyrics.entity';
+import cheerioModule from 'cheerio';
+import moment, { utc } from 'moment';
+import { MoreThan, Repository } from 'typeorm';
+
+import { SearchLyricsContentResDto, SearchLyricsResDto } from './dtos/lyrics.interface';
+import { Lyrics, SearchRecord } from './lyrics.entity';
 
 @Injectable()
 export class LyricsService {
@@ -18,13 +18,13 @@ export class LyricsService {
 		private searchRecordRepository: Repository<SearchRecord>,
 	) {}
 
+	//#region 爬蟲爬取歌詞列表
 	/**
 	 * 爬蟲爬取歌詞列表
 	 * @param artist 歌手
 	 * @param song 歌曲名
 	 */
-	async getLyricsList(artist: string, song: string) {
-		const result: { error?: Error; data?: Array<SearchLyricsResponseDto> } = {};
+	async getLyricsList(artist: string, song: string): Promise<SearchLyricsResDto[] | string> {
 		try {
 			const dom = await axios.get('https://utaten.com/lyric/search', {
 				headers: {},
@@ -39,12 +39,12 @@ export class LyricsService {
 			});
 
 			// 拆解 DOM
-			const $ = cheerio.load(dom.data);
+			const $ = cheerioModule.load(dom.data);
 			const title = $('body div#container > div#contents > main h2.contentBox__title').first();
 			const table = title.next('div.contentBox__body').children('table');
 			const trs = table.children('tbody').children('tr');
 
-			result.data = [];
+			const list: SearchLyricsResDto[] = [];
 			for (let i = 0; i < trs.length; i++) {
 				if (trs.eq(i).children('td').length >= 2) {
 					const td1 = trs.eq(i).children('td:first');
@@ -60,8 +60,8 @@ export class LyricsService {
 					const beginning = td2.children('a').text().trim();
 					// const pTitle = trs.eq(i).children('td:first').find('> p.searchResult__title > a');
 					// const pName = trs.eq(i).children('td:nth-child(2)').find('> p.searchResult__name > a');
-					result.data.push({
-						id: result.data.length + 1,
+					list.push({
+						id: list.length + 1,
 						title: tTitle,
 						artist: tName,
 						lyricsUrl: tHref || '',
@@ -70,56 +70,112 @@ export class LyricsService {
 					});
 				}
 			}
+			return list;
 		} catch (err) {
-			result.error = err;
+			return err;
 		}
-		return result;
 	}
+	//#endregion
 
+	//#region 儲存搜尋紀錄
 	/**
+	 * create search lyrics record
 	 * @param artist 歌手
 	 * @param song 歌曲名
 	 * @returns
 	 */
-	async saveSearchRecord(artist: string, song: string) {
+	async createSearchRecord(artist: string, song: string) {
 		try {
-			// return this.searchRecordRespository
-			// 	.createQueryBuilder()
-			// 	.insert()
-			// 	.into(SearchRecord)
-			// 	.values({ artist, song })
-			// 	.orUpdate(['update_time'], ['song', 'artist'])
-			// 	.execute();
-			// or .getSql();
+			const record = this.searchRecordRepository
+				.createQueryBuilder()
+				.insert()
+				.into(SearchRecord)
+				.values([
+					{
+						song,
+						artist,
+					},
+				])
+				.orUpdate(['update_time'], ['song', 'artiest'])
+				.execute();
 
-			return this.searchRecordRepository.upsert(
-				{
-					song: song,
-					artist: artist,
-					update_time: () => 'CURRENT_TIMESTAMP',
-				},
-				['song', 'artist'],
-			);
-			// return this.searchRecordRespository.save({
-			// 	artist: artist,
-			// 	song: song,
-			// });
+			return record;
+			// return await this.searchRecordRepository(record);
+
+			// return await this.searchRecordRepository.upsert(
+			// 	{
+			// 		song: song,
+			// 		artist: artist,
+			// 		update_time: () => 'CURRENT_TIMESTAMP',
+			// 	},
+			// 	['song', 'artist'],
+			// );
 		} catch (error) {
-			const { code, errno, sqlState, sqlMessage } = error;
-			return { code, errno, sqlState, sqlMessage };
+			return error as Error;
 		}
 	}
+	//#endregion
+
+	//#region 查詢搜尋紀錄
+	/**
+	 * get search records
+	 * @param days
+	 * @param limit
+	 * @returns
+	 */
+	async getSearchRecords(days = 30, limit = 5) {
+		try {
+			// const records = await this.searchRecordRepository.find({
+			// 	select: ['id', 'artist', 'song', 'update_time', 'insert_time'],
+			// 	where: {
+			// 		update_time: MoreThan(moment().add(-days, 'day').startOf('day').toDate()),
+			// 	},
+			// 	order: {
+			// 		update_time: 'DESC',
+			// 	},
+			// 	take: limit,
+			// });
+			console.log(moment().add(-days, 'day').startOf('day').toDate());
+
+			const records = await this.searchRecordRepository
+				.createQueryBuilder('s')
+				// .select('searchRecord')
+				// .from(SearchRecord, 'u')
+				.where('s.update_time >= :update_time', {
+					update_time: moment().add(-days, 'day').startOf('day').toDate(),
+				})
+				.take(limit)
+				.select(['s.artist', 's.song', 's.update_time'])
+				.orderBy('s.update_time', 'DESC')
+				// .getSql();
+				.getMany();
+
+			console.log(records);
+
+			// console.log('------------------');
+
+			// records.forEach((e) => {
+			// 	console.log(e.insert_time, e.artist, e.song);
+			// 	console.log(moment(e.insert_time).format('YYYY-MM-DD HH:mm:ss'));
+			// });
+
+			return records;
+		} catch (error) {
+			return error;
+		}
+	}
+	//#endregion
 
 	/**
 	 * 爬蟲爬取歌詞內容
-	 * @param lyricsID 歌詞 ID
+	 * @param lyricsKey 歌詞 ID
 	 * @returns
 	 */
-	async getLyricsContent(lyricsID: string) {
-		const result: { error?: Error; data?: CrawlLyricsResponseDto } = {};
+	async getLyricsContent(lyricsKey: string) {
+		const result: { error?: Error; data?: SearchLyricsContentResDto } = {};
 
 		try {
-			const url = `https://utaten.com/lyric/${lyricsID}/`;
+			const url = `https://utaten.com/lyric/${lyricsKey}/`;
 
 			const dom = await axios.get(url, {
 				headers: {},
@@ -127,7 +183,7 @@ export class LyricsService {
 				responseEncoding: 'utf8',
 			});
 
-			const $ = cheerio.load(dom.data);
+			const $ = cheerioModule.load(dom.data);
 			const main = $('body div#container > div#contents > main > article').first();
 			const divTitle = main.children('div.newLyricTitle');
 			const h2Title = divTitle.children('h2.newLyricTitle__main');
@@ -148,8 +204,8 @@ export class LyricsService {
 				data: {
 					artist: tArtiest,
 					title: tTitle,
-					lyricsID: lyricsID,
-					lyrcisUrl: `/lyric/${lyricsID}/`,
+					lyricsKey: lyricsKey,
+					lyrcisUrl: `/lyric/${lyricsKey}/`,
 					lyrics: lyricsContent,
 				},
 			});
@@ -168,17 +224,16 @@ export class LyricsService {
 	 * @param lyrics 歌詞內容
 	 * @returns
 	 */
-	async saveLyrics(lyrics_key: string, artist: string, song: string, lyrics: string) {
+	async saveLyricsContent(lyrics_key: string, artist: string, song: string, lyricsContent: string) {
 		try {
-			return await this.lyricsListRepository.save({
-				lyrics_key,
-				artist,
-				song,
-				lyrics,
-			});
+			const lyrics = new Lyrics();
+			lyrics.lyrics_key = lyrics_key;
+			lyrics.artist = artist;
+			lyrics.song = song;
+			lyrics.lyrics = lyricsContent;
+			return await lyrics.save();
 		} catch (error) {
-			const { code, errno, sqlState, sqlMessage } = error;
-			return { code, errno, sqlState, sqlMessage };
+			return error;
 		}
 	}
 

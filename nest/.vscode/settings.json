@@ -23,4 +23,7 @@
         "editor.formatOnSave": true, // 針對 ts
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "markdown.styles": [
+        "https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    ]
 }

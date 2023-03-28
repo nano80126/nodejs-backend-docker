@@ -2,16 +2,17 @@ import { youtube, youtube_v3 } from '@googleapis/youtube';
 import { Injectable } from '@nestjs/common';
 import moment from 'moment';
 
-import { VideoInfoResDTO, VideoThumbnailDto } from '@/modules/video/dtos/video.interface';
+import { VideoInfoResDTO, VideoThumbnailDto } from './dtos/video.interface';
 
 @Injectable()
-export class YouTubeService {
+export class VideoService {
 	yt: youtube_v3.Youtube;
 	constructor() {
 		this.yt = youtube({
 			auth: process.env.YT_API_KEY,
 			version: 'v3',
 		});
+		// console.log(process.env);
 	}
 
 	/**

@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 /**搜尋歌詞列表 REQ DTO */
-export class SearchLyricsReqDTO {
+export class SearchLyricsReqDto {
 	@ApiProperty({ maxLength: 20, required: false, description: '歌手名' })
 	artist?: string;
 	@ApiProperty({ maxLength: 20, required: false, description: '歌名' })
 	title?: string;
 }
 
-export class SearchLyricsRecordDto extends SearchLyricsReqDTO {
+export class SearchLyricsRecordDto extends SearchLyricsReqDto {
 	@ApiProperty()
 	insertTime: Date;
 }
 
 /**搜尋歌詞列表 REP DTO */
-export class SearchLyricsResponseDto extends SearchLyricsReqDTO {
+export class SearchLyricsResDto extends SearchLyricsReqDto {
 	@ApiProperty()
 	id: number;
 	@ApiProperty()
@@ -26,8 +26,8 @@ export class SearchLyricsResponseDto extends SearchLyricsReqDTO {
 }
 
 /**歌詞爬蟲 REQ DTO */
-export class CrawlLyricsResponseDto {
-	@ApiProperty()
+export class SearchLyricsContentResDto {
+	@ApiProperty({ description: '歌手名' })
 	artist: string;
 	@ApiProperty()
 	title: string;
@@ -40,7 +40,7 @@ export class CrawlLyricsResponseDto {
 }
 
 /**儲存歌詞 REQ DTO */
-export class SaveLyricsReqDTO {
+export class SaveLyricsReqDto {
 	@ApiProperty({ maxLength: 10, required: true, description: '歌詞ID' })
 	lyrics_key: string;
 

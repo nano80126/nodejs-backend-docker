@@ -35,19 +35,20 @@ services:
   #     - 27017
   #   ports:
   #     - 27018:27017
-  # redis:
-  #   restart: unless-stopped
-  #   build:
-  #     context: ./redis
-  #     dockerfile: Dockerfile
-  #   image: docker-redis
-  #   container_name: redis
-  #   volumes:
-  #     - Z:/redis:/data
-  #   expose:
-  #     - 6379
-  #   ports:
-  #     - 6379:6379
+  redis:
+    restart: unless-stopped
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    image: docker-redis
+    container_name: redis
+    volumes:
+      - ~/redis:/data
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass 0000
   # node1:
   #   restart: on-failure:5
   #   build:
@@ -61,24 +62,6 @@ services:
   #     - 4000
   #   ports:
   #     - 8081:4000
-  #   command: yarn dev
-  #   depends_on:
-  #     - mongo
-  #     - mysql
-  # node2:
-  #   restart: on-failure:5
-  #   build:
-  #     context: ./node
-  #     dockerfile: Dockerfile
-  #     # target: base
-  #   container_name: fastify-2
-  #   volumes:
-  #     - ./node:/home/node/app
-  #     - ./node/nodemon.json:/home/node/app/nodemon.json
-  #   expose:
-  #     - 4000
-  #   ports:
-  #     - 8082:4000
   #   command: yarn dev
   #   depends_on:
   #     - mongo

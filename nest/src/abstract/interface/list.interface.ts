@@ -1,4 +1,4 @@
 // import { ApiProperty } from '@nestjs/swagger';
-import { SearchLyricsReqDTO } from '@/modules/lyrics/dto/lyrics.interface';
+import { SearchLyricsReqDto } from '@/modules/lyrics/dtos/lyrics.interface';
 
-export type SearchRecordResDTO = SearchLyricsReqDTO;
+export type SearchRecordResDTO = SearchLyricsReqDto;

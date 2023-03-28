@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { expect } from 'chai';
 
+import { SearchLyricsContentResDto } from './dtos/lyrics.interface';
 import { LyricsController } from './lyrics.controller';
 import { LyricsService } from './lyrics.service';
-import { expect } from 'chai';
-import { CrawlLyricsResponseDto } from '@/modules/lyrics/dto/lyrics.interface';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { Lyrics } from '@/entities/lyrics.entity';
 
@@ -25,7 +25,7 @@ describe('LyricsController', () => {
 	});
 
 	describe('getLyricsContent', async () => {
-		let res: { error?: Error; data?: CrawlLyricsResponseDto };
+		let res: { error?: Error; data?: SearchLyricsContentResDto };
 
 		// 這個 before 會早於外層beforeEach
 		/**抓取爬蟲結果 */

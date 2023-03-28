@@ -1,13 +1,12 @@
+import { fastifyCookie } from '@fastify/cookie';
 import { NestFactory } from '@nestjs/core';
-import fastifyCookie from '@fastify/cookie';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { createPool } from 'mariadb';
+import moment from 'moment';
+// import * as dotenv from 'dotenv';
 
-dotenv.config();
-const port = process.env.PORT || 3000;
-const ip = process.env.IP || '127.0.0.1';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
@@ -31,8 +30,8 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('swagger', app, document);
 
-	// app.enableCors();
-	await app.listen(port, ip);
+	// console.log(process.env.HOST, process.env.PORT);
+	await app.listen(process.env.PORT || 3000, process.env.HOST || '127.0.0.1');
 }
 
 bootstrap();

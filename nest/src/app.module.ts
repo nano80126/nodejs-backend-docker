@@ -1,39 +1,49 @@
 import { Module } from '@nestjs/common';
-import { AppController } from '@/app.controller';
-import { AppService } from '@/app.service';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import mariadb, { createPool } from 'mariadb';
+import { DataSource } from 'typeorm';
 
-// import { Lyrics } from './entities/lyrics.entity';
-// import { SearchRecord, Lyrics } from './deprecated/index';
-// import { SearchController } from './controllers/search.controller';
-// import { SearchService } from './services/search.service';
-import { AuthModule } from '@/auth/auth.module';
-import { LyrcisModule } from '@/modules/lyrics/lyrics.module';
-import { YouTubeModule } from '@/modules/youtube.module';
-import { SearchModule } from '@/modules/search.module';
-import { ListModule } from './modules/list.module';
-import { UsersModule } from './users/users.module';
-
-const typeOrmRoot = TypeOrmModule.forRoot({
-	type: 'mariadb',
-	host: 'mariadb',
-	port: 3306,
-	username: 'root',
-	password: '0000',
-	database: 'youtube_player',
-	retryAttempts: 3,
-	// entities: ['./entities/index.ts'],
-	entities: [__dirname + '/**/*.entity{.ts,.js}'],
-	// autoLoadEntities: true,
-	synchronize: true,
-	timezone: '-08:00',
-});
-
-// console.log(__dirname);
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import appConfig from './configs/app.config';
+import videoConfig from './configs/video.config';
+import { LyrcisModule } from './modules/lyrics/lyrics.module';
+import { UsersModule } from './modules/users/users.module';
+import { VideoModule } from './modules/video/video.module';
 
 @Module({
-	imports: [typeOrmRoot, AuthModule, UsersModule, LyrcisModule, YouTubeModule, SearchModule, ListModule, UsersModule],
+	imports: [
+		ConfigModule.forRoot({
+			envFilePath: '.env',
+			load: [appConfig, videoConfig],
+		}),
+		TypeOrmModule.forRoot({
+			type: 'mariadb',
+			// driver: require('mariadb'),
+			host: process.env.DB_HOST,
+			port: Number(process.env.DB_PORT),
+			username: process.env.DB_USER,
+			password: process.env.DB_PWD,
+			database: process.env.DB_NAME,
+			retryAttempts: 3,
+			entities: [__dirname + '/**/*.entity{.ts,.js}'],
+			synchronize: true,
+			ssl: Number(process.env.DB_SSL) === 1,
+			timezone: '+00:00',
+		}),
+
+		AuthModule,
+		UsersModule,
+		LyrcisModule,
+		VideoModule,
+	],
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+	constructor(private dataSource: DataSource) {
+		//
+	}
+}

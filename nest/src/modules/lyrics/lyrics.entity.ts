@@ -1,17 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, PrimaryColumn, Generated } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Video } from '@/entities/video.entity';
 
 /**搜尋歌詞 entity */
 @Entity()
-// @Index(['song', 'artist'], { unique: true })
-export class SearchRecord {
-	@PrimaryGeneratedColumn('uuid')
-	id: string;
+@Index(['song', 'artist'], { unique: true })
+export class SearchRecord extends BaseEntity {
+	@PrimaryGeneratedColumn()
+	id: number;
 
-	@Column({ type: 'varchar', length: 20, comment: '123' })
+	@Column({ type: 'varchar', length: 20, comment: '歌曲名' })
 	song: string;
 
-	@Column({ type: 'varchar', length: 20, comment: '456' })
+	@Column({ type: 'varchar', length: 20, comment: '歌手名' })
 	artist: string;
 
 	// @Index('updateTime')
@@ -27,30 +28,26 @@ export class SearchRecord {
 @Entity()
 @Index(['artist', 'song'], { unique: true })
 // @Index([])
-export class Lyrics {
-	@PrimaryGeneratedColumn()
+export class Lyrics extends BaseEntity {
+	@PrimaryGeneratedColumn({ comment: 'PK' })
 	id: number;
 
-	// @Column()
-	// @Generated('uuid')
-	// uuid: string;
-
 	@Index({ unique: true })
-	@Column({ type: 'varchar', length: 10 })
+	@Column({ type: 'varchar', length: 10, comment: '歌詞 key, 來自歌詞網站' })
 	lyrics_key: string;
 
 	// @Column({ type: 'varchar' })
 	@OneToMany(() => Video, (video) => video.lyrics_id)
 	videos: Video[];
 
-	@Column({ type: 'varchar', length: 20 })
+	@Column({ type: 'varchar', length: 20, comment: '演唱者' })
 	artist: string;
 
 	@Index()
-	@Column({ type: 'varchar', length: 20 })
+	@Column({ type: 'varchar', length: 20, comment: '歌曲名' })
 	song: string;
 
-	@Column({ type: 'text' })
+	@Column({ type: 'text', comment: '歌詞內容' })
 	lyrics: string;
 
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })

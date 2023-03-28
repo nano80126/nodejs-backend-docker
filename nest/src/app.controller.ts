@@ -1,5 +1,6 @@
-import { Controller, Get, Req, Res, Param } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { Controller, Get, Param, Res } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
+
 import { AppService } from './app.service';
 
 @Controller('api')

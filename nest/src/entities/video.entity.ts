@@ -1,13 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Lyrics } from '@/modules/lyrics/lyrics.entity';
 
 @Entity()
 export class Video {
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn({ comment: 'PK' })
 	id: number;
 
 	// @Index({ unique: true })
-	@Column({ type: 'varchar', length: 11 })
+	@Column({ type: 'varchar', length: 11, comment: '' })
 	video_key: string;
 
 	// @Column({ type: 'varchar', length: 10 })
@@ -16,7 +17,7 @@ export class Video {
 	lyrics_id: Lyrics;
 
 	@Column({ type: 'varchar', length: 50 })
-	title: string;
+	song: string;
 
 	@Column({ type: 'varchar', length: 50 })
 	artist: string;
