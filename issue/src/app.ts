@@ -4,13 +4,15 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
-import moment from 'moment';
+import moment, { monthsShort } from 'moment';
 import mariadb from 'mariadb';
 import { orderBy } from 'lodash';
 import { waApiKey, doGet } from './utils/kwapi';
-import { convertDateArr } from './utils/iov';
+import { convertDateArr, convertDateArr2 } from './utils/iov';
 import { Server as ioServer } from 'socket.io';
 import { io as ioClient } from 'socket.io-client';
+import { hostname } from 'os';
+// import './utils/test';
 
 import { KWCarNaviDirectiosDTO } from './dtos/kw.interface';
 
@@ -19,6 +21,8 @@ import coldchainRouter from './routes/codechain.route';
 import { JourneyReportListReqDTO } from './dtos/journey.interface';
 
 import { initSocketIO } from './socket';
+//import chain from './json/coldchain.json';
+// console.log(chain.data.length);
 
 // 載入 .env
 dotenv.config();
@@ -44,15 +48,24 @@ const port: number = Number(process.env.PORT) || 3000;
 // app.use();
 
 //
-const pool = mariadb.createPool({
+
+export const pool = mariadb.createPool({
 	host: process.env.DB_HOST,
+	// host: 'localhost',
 	user: process.env.DB_USER,
+	// user: 'root',
 	password: process.env.DB_PWD,
+	// password: '0000',
 	database: process.env.DB_NAME,
+	port: 3306,
+	// database: 'test',
 	connectionLimit: Number(process.env.DB_POOL_SIZE),
 	ssl: process.env.DB_SSL === '1',
 	collation: 'UTF8MB4_GENERAL_CI',
+	timezone: '+00:00',
 });
+
+// import './utils/schedule';
 
 app.get('/ping', (req, res) => {
 	res.status(200).send('pong\n');
@@ -62,6 +75,36 @@ app.post('/ping', (req, res) => {
 	console.log(req.body);
 
 	res.status(200).send('susscess');
+});
+
+// const conn = pool.getConnection().then((res) => {
+// 	const startDate = moment.utc(1679846400000).format('YYYY-MM-DD HH:mm:ss');
+// 	const endDate = moment.utc(1679932799999).format('YYYY-MM-DD HH:mm:ss');
+
+// 	console.log(startDate, endDate);
+
+// 	const sql = `select * from \`maintenance\` where \`reserved_date\` between ${startDate} AND ${endDate}`;
+// 	console.log(sql);
+
+// 	res.query(`select * from \`maintenance\` where \`reserved_date\` between '${startDate}' AND '${endDate}'`).then(
+// 		(results) => {
+// 			// console.log(results);
+// 			console.log(results);
+
+// 			results.forEach((e: any) => {
+// 				console.log(e['factory_name'], e['reserved_date']);
+// 				console.log(moment(e['reserved_date']).format('YYYY-MM-DD HH:mm:ss'));
+// 			});
+// 		},
+// 	);
+// })
+
+app.get('/getdata', async (req, res) => {
+	const conn = await pool.getConnection();
+	const sql = 'SELECT * FROM `message` WHERE `category` = 7 ORDER BY `created_at` DESC LIMIT 5';
+	const query = await conn.query(sql);
+	console.log(query);
+	res.status(200).send('done');
 });
 
 app.get('/time-format', (req, res) => {
@@ -257,34 +300,31 @@ server.listen(port, host, () => {
 
 initSocketIO(server);
 
-// io.of('/ws').on('connection', (socket) => {
-// 	console.log('one user connected', socket.id);
-
-// 	socket.use((packet, next) => {
-// 		// packet[0] : channel name, packet[1] : payload
-// 		if (typeof packet[1] === 'string') {
-// 			packet[1] = JSON.parse(packet[1]);
-// 		}
-// 		next();
-// 	});
-
-// 	socket.on('disconnect', () => {
-// 		console.log('one user disconnected');
-// 	});
-
-// 	socket.on('subscribe', (msg) => {
-// 		console.log(msg);
-// 	});
-// });
-
 setTimeout(() => {
 	const socketRes1 = client1.connect();
 	const socketRes2 = client2.connect();
-	// setTimeout(() => {
-	// 	const { connected } = socketRes1;
-	// 	console.log(connected);
-	// 	console.log(socketRes2.connected);
-	// }, 1000);
+
+	setTimeout(() => {
+		console.log(socketRes1.connected, socketRes2.connected);
+	}, 300);
 }, 1000);
+
+// console.log(convertDateArr2(1679328000000, 1679414399000));
+
+// console.log(
+// 	JSON.parse(
+// 		'{"journeyCode":230321010001,"dataCount":0,"time":1679363818938,"deviceId":"","carStatus":1,"enabledCode":"N457LYLGVC","vincode":"XZU640-4019315","fenceId":[],"driverUid":"17321769261853639291","gps":{"longitude":121.459346,"latitude":25.063874,"speed":0,"speedLimit":0,"azimuth":304.83},"telecommunications":{"imsi":""},"can":{"totalMileage":2020.3,"accumulatedMileage":0,"canSpeed":0,"engine":{"engineTotalTime":115.3}},"event":[{"type":1,"startTime":1679363818938},{"type":4,"startTime":1679363818938}],"protocolVersion":"1","externalDevices":{"tpms":{},"coldChain":{"sensor1":{"temp":30}}}}',
+// 	),
+// );
+
+console.log(moment.unix(1679500800000 / 1000));
+console.log(moment.utc(1679500800000));
+
+// console.log(moment.utc(1679500800000).format('YYYY-MM-DD HH:mm:ss'));
+// console.log(moment(1679500800000).format('YYYY-MM-DD HH:mm:ss'));
+// console.log(new Date(1679500800000));
+// console.log(new Date(1679500800000).toLocaleString());
+
+// console.log(moment.unix(1679500800).format('YYYY-MM-DD HH:mm:ss'));
 
 export { app, server };

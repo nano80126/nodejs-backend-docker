@@ -38,3 +38,20 @@ export const convertDateArr = (startDate: string, endDate: string) => {
 	}
 	return dates;
 };
+
+export const convertDateArr2 = (startTime: number, endTime: number) => {
+	let i = 0;
+	const dates = [];
+	const startDate = moment.unix(startTime / 1000).format('YYYYMMDD');
+	const endDate = moment.unix(endTime / 1000).format('YYYYMMDD');
+	console.log(moment(endDate).diff(moment(startDate, 'YYYYMMDD'), 'days'));
+	dates.push(startDate);
+	while (i < moment(endDate).diff(moment(startDate, 'YYYYMMDD'), 'days')) {
+		const date = moment(startDate, 'YYYYMMDD')
+			.add(i + 1, 'days')
+			.format('YYYYMMDD');
+		dates.push(date);
+		i++;
+	}
+	return dates;
+};

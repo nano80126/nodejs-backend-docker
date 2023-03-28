@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   mysql:
-    restart: unless-stopped
+    restart: on-failure:5
     build:
       context: ./mariadb
       dockerfile: Dockerfile
@@ -10,9 +10,9 @@ services:
     container_name: mariadb
     volumes:
       - ~/mariadb:/var/lib/mysql
-      - ./mariadb/ssl:/etc/mysql/ssl
-      - ./mariadb/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
-      - ./mariadb/50-mysql-clients.cnf:/etc/mysql/mariadb.conf.d/50-mysql-clients.cnf
+      # - ./mariadb/ssl:/etc/mysql/ssl
+      # - ./mariadb/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+      # - ./mariadb/50-mysql-clients.cnf:/etc/mysql/mariadb.conf.d/50-mysql-clients.cnf
     # environment:
     #   - SERVER_KEY=$(cat -E /etc/mysql/ssl/server-key.pem | xargs)
     #   - SERVER_CERT=$(cat -E /etc/mysql/ssl/server-cert.pem | xargs)
@@ -96,23 +96,23 @@ services:
       - 80
     ports:
       - 8888:80
-  nest-1:
-    restart: on-failure:5
-    build:
-      context: ./nest
-      dockerfile: Dockerfile
-    image: docker-nest
-    container_name: nest-1
-    volumes:
-      - ./nest:/usr/src/app
-    expose:
-      - 4000
-    ports:
-      - 8081:4000
-    command: yarn start:dev
-    depends_on:
-      # - mongo
-      - mysql
+  # nest-1:
+  #   restart: on-failure:5
+  #   build:
+  #     context: ./nest
+  #     dockerfile: Dockerfile
+  #   image: docker-nest
+  #   container_name: nest-1
+  #   volumes:
+  #     - ./nest:/usr/src/app
+  #   expose:
+  #     - 4000
+  #   ports:
+  #     - 8081:4000
+  #   command: yarn start:dev
+  #   depends_on:
+  #     # - mongo
+  #     - mysql
   # nest-2:
   #   restart: on-failure:5
   #   build:
@@ -130,22 +130,22 @@ services:
   #   depends_on:
   #     # - mongo
   #     - mysql
-  web:
-    restart: on-failure:5
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-      # target: base
-    image: docekr-web
-    container_name: web-1
-    volumes:
-      - ./web:/home/node/app
-      - ./web/nodemon.json:/home/node/app/nodemon.json
-    expose:
-      - 3000
-    ports:
-      - 8080:3000
-    command: yarn dev
-    depends_on:
-      - nest-1
+  # web:
+  #   restart: on-failure:5
+  #   build:
+  #     context: ./web
+  #     dockerfile: Dockerfile
+  #     # target: base
+  #   image: docekr-web
+  #   container_name: web-1
+  #   volumes:
+  #     - ./web:/home/node/app
+  #     - ./web/nodemon.json:/home/node/app/nodemon.json
+  #   expose:
+  #     - 3000
+  #   ports:
+  #     - 8080:3000
+  #   command: yarn dev
+  #   depends_on:
+  #     - nest-1
       # - node2
