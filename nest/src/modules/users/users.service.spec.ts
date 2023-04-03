@@ -39,7 +39,7 @@ describe('UsersService', () => {
 	describe('test', () => {
 		it('should be defined', async () => {
 			// expect(service).to.be.not;
-			const user = await service.findOne('123');
+			const user = await service.findOneUser('123');
 			// console.log(user, 456);
 
 			expect(user).to.deep.equal({

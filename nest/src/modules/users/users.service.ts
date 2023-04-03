@@ -3,34 +3,42 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcrypt';
 import { DeleteResult, Repository } from 'typeorm';
 
-import { CreateUserDto } from './dtos/users.interface';
-import { Users } from './users.entity';
+import { RefreshToken } from './entities/refreshToken.entify';
+import { Users } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(Users)
-		private userRepository: Repository<Users>,
+		private userRepository: Repository<Users>, // @InjectRepository(RefreshToken) // private refreshTokenRepository: Repository<RefreshToken>,
 	) {}
 
-	async create(account: string, password: string): Promise<Users> {
+	async checkAccountExist(account: string) {
+		return await this.userRepository.exist({
+			where: {
+				account: account,
+			},
+		});
+	}
+
+	async createUser(account: string, password: string) {
 		const user = new Users();
 		user.account = account;
 		user.password = await hash(password, 10);
-		user.password_masked = password.substring(0, 4).padEnd(12, '*');
-		return user.save();
+		user.password_masked = password.padEnd(20, '*').substring(0, 4).padEnd(12, '*');
+		return await user.save();
 	}
 
-	async findOne(account: string): Promise<Users> {
+	async findOneUser(account: string): Promise<Users> {
 		return this.userRepository.findOne({
 			where: {
 				account: account,
 			},
-			select: ['account', 'password', 'password_masked', 'insert_time', 'update_time'],
+			select: ['id', 'account', 'password', 'password_masked', 'insert_time', 'update_time'],
 		});
 	}
 
-	async findAll() {
+	async findAllUsers() {
 		return this.userRepository
 			.createQueryBuilder('users')
 			.select(['users.id', 'users.account', 'users.update_time', 'users.insert_time'])
@@ -39,7 +47,7 @@ export class UsersService {
 		// return this.userRepository.find();
 	}
 
-	async remove(id: string): Promise<DeleteResult> {
+	async deleteUser(id: string): Promise<DeleteResult> {
 		return this.userRepository.delete(id);
 	}
 }

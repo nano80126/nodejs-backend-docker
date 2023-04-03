@@ -1,7 +1,5 @@
 module.exports = {
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint/eslint-plugin', 'prettier', 'import'],
-	// extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
 	extends: [
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
@@ -9,6 +7,7 @@ module.exports = {
 		'plugin:import/recommended',
 		'plugin:import/typescript',
 	],
+	plugins: ['@typescript-eslint/eslint-plugin', 'prettier', 'import'],
 	parserOptions: {
 		ecmaVersion: 2020,
 		sourceType: 'module',

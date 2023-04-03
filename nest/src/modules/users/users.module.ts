@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthModule } from '@/auth/auth.module';
+
+import { RefreshToken } from './entities/refreshToken.entify';
+import { Users } from './entities/users.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
-import { Users } from './users.entity';
-
 @Module({
-	imports: [TypeOrmModule.forFeature([Users])],
+	imports: [TypeOrmModule.forFeature([Users, RefreshToken])],
 	controllers: [UsersController],
 	providers: [UsersService],
 	exports: [UsersService],

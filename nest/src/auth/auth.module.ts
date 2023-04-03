@@ -1,30 +1,39 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { consumers } from 'stream';
+
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { config } from 'rxjs';
 
 import { UsersModule } from '@/modules/users/users.module';
 
 import { AuthController } from './auth.controller';
+import { AuthMiddleware } from './auth.middleware';
 import { AuthService } from './auth.service';
-import { jwtConstants } from './constants';
-import { LocalStrategy } from './local.strategy';
+import { ApiKeyStrategy } from './strategy/apiKey.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { LocalStrategy } from './strategy/local.strategy';
 
 @Module({
 	imports: [
 		ConfigModule,
 		UsersModule,
-		PassportModule,
+		PassportModule.register({ defaultStrategy: 'api-key' }),
 		JwtModule.register({
-			secret: new jwtConstants().secret || '1231231312312',
 			signOptions: {
 				algorithm: 'HS256',
-				expiresIn: '86400s',
+				expiresIn: '1d',
 			},
 		}),
 	],
 	controllers: [AuthController],
-	providers: [AuthService, LocalStrategy],
+	providers: [AuthService, ApiKeyStrategy, LocalStrategy, JwtStrategy],
+	exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(AuthMiddleware).forRoutes('auth');
+	}
+}

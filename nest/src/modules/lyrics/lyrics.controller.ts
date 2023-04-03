@@ -2,9 +2,7 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query, Res } fr
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 
-import { SearchRecordResDTO } from '@/abstract/interface/list.interface';
-
-import { SaveLyricsReqDto, SearchLyricsReqDto, UpdateLyricsReqDTO } from './dtos/lyrics.interface';
+import { SaveLyricsReqDto, SearchLyricsReqDto } from './dtos/lyrics.interface';
 import { LyricsService } from './lyrics.service';
 
 @ApiTags('Lyrics')
@@ -66,11 +64,7 @@ export class LyricsController {
 	/**create lyrics content */
 	@ApiOkResponse({ status: HttpStatus.CREATED, description: 'save lyrics content successfully' })
 	@Post('/:key')
-	async saveLyricsContent(
-		@Res() res: FastifyReply,
-		@Param('key') lyricsKey: string,
-		@Body() saveLyricsReqDto: SaveLyricsReqDto,
-	) {
+	async saveLyricsContent(@Res() res: FastifyReply, @Param('key') lyricsKey: string, @Body() saveLyricsReqDto: SaveLyricsReqDto) {
 		const { lyrics_key, artist, song, lyrics } = saveLyricsReqDto;
 		const result = await this.lyricsService.saveLyricsContent(lyrics_key, artist, song, lyrics);
 

@@ -190,12 +190,7 @@ export class LyricsService {
 			h2Title.find('span').remove();
 			const tTitle = h2Title.text().trim();
 			const divArtist = main.children('div.lyricData');
-			const tArtiest = divArtist
-				.children('div.lyricData__main')
-				.children('dl.newLyricWork')
-				.find('h3 > a')
-				.text()
-				.trim();
+			const tArtiest = divArtist.children('div.lyricData__main').children('dl.newLyricWork').find('h3 > a').text().trim();
 
 			const lyricsBody = main.children('div.lyricBody');
 			const lyricsContent = lyricsBody.children('.medium').children('.hiragana').html();

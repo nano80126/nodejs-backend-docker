@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
 import { AppService } from './app.service';
+import { ApiKeyAuthGuard } from './auth/guard/apiKey-auth.guard';
 
+@UseGuards(ApiKeyAuthGuard)
 @Controller('api')
 export class AppController {
 	constructor(private readonly appService: AppService) {}
@@ -10,6 +12,6 @@ export class AppController {
 	@Get('/:name')
 	getHello(@Res() reply: FastifyReply, @Param('name') param: string) {
 		const res = this.appService.getHello(param);
-		return reply.status(200).send(res);
+		reply.status(200).send(res);
 	}
 }

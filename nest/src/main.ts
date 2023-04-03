@@ -2,8 +2,6 @@ import { fastifyCookie } from '@fastify/cookie';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { createPool } from 'mariadb';
-import moment from 'moment';
 // import * as dotenv from 'dotenv';
 
 import { AppModule } from './app.module';

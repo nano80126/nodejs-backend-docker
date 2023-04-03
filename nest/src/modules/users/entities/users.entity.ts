@@ -1,9 +1,11 @@
-import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import { RefreshToken } from './refreshToken.entify';
 
 @Entity()
 export class Users extends BaseEntity {
 	@PrimaryGeneratedColumn({ comment: 'PK' })
-	id: string;
+	id: number;
 
 	@Index({ unique: true })
 	@Column({ type: 'varchar', length: 20, comment: '帳號' })
@@ -20,4 +22,8 @@ export class Users extends BaseEntity {
 
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 	'insert_time': Date;
+
+	@OneToOne(() => RefreshToken, { cascade: true })
+	@JoinColumn()
+	'refresh_token': RefreshToken;
 }
