@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Video } from '@/entities/video.entity';
+import { Video } from '@/modules/video/entities/video.entity';
 
 /**搜尋歌詞 entity */
 @Entity()

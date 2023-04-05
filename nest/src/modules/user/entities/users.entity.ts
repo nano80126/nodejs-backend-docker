@@ -1,9 +1,9 @@
-import { BaseEntity, Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, DeleteDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { RefreshToken } from './refreshToken.entify';
 
 @Entity()
-export class Users extends BaseEntity {
+export class User extends BaseEntity {
 	@PrimaryGeneratedColumn({ comment: 'PK' })
 	id: number;
 
@@ -21,9 +21,11 @@ export class Users extends BaseEntity {
 	'update_time': Date;
 
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-	'insert_time': Date;
+	'create_time': Date;
 
-	@OneToOne(() => RefreshToken, { cascade: true })
-	@JoinColumn()
+	@DeleteDateColumn({ type: 'timestamp', comment: '軟刪除時間' })
+	'delete_time': Date;
+
+	@OneToOne(() => RefreshToken, (token) => token.user)
 	'refresh_token': RefreshToken;
 }

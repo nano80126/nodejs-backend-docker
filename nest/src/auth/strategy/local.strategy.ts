@@ -3,7 +3,7 @@ import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { IVerifyOptions, Strategy } from 'passport-local';
 
-import { Users } from '@/modules/users/entities/users.entity';
+import { User } from '@/modules/user/entities/users.entity';
 
 import { AuthService } from '../auth.service';
 
@@ -15,14 +15,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 		super(
 			{ usernameField: 'account', passwordField: 'password', passReqToCallback: true },
 			async (
-				request: Express.Request,
+				req: Express.Request,
 				account: string,
 				password: string,
 				done: (error: Error, user?: Express.User | false, options?: IVerifyOptions) => void,
 			) => {
 				try {
 					const user = await this.authService.validateUser(account, password);
-					done(null, { ...user, ...request.user }, { message: '登入成功' });
+					done(null, { ...user, ...req.user }, { message: '登入成功' });
 				} catch (error) {
 					done(new UnauthorizedException(error.message), null, { message: error.message });
 				}

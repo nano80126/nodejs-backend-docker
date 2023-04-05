@@ -6,11 +6,14 @@ import axios from 'axios';
 import * as bcrypt from 'bcrypt';
 import { use } from 'chai';
 import { sign, verify } from 'jsonwebtoken';
+import moment from 'moment';
 import { Repository } from 'typeorm';
 
-import { UsersService } from '@/modules/users/users.service';
+import { RefreshToken } from '@/modules/user/entities/refreshToken.entify';
+import { User } from '@/modules/user/entities/users.entity';
+import { UsersService } from '@/modules/user/user.service';
 
-import { jwtPayloadDto } from './dto/jwt.dto';
+import { jwtPayloadDto, validateUserResDto } from './dto/auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,18 +33,18 @@ export class AuthService {
 	}
 
 	/**驗證 User */
-	async validateUser(account: string, password: string) {
+	async validateUser(account: string, password: string): Promise<validateUserResDto> {
 		const user = await this.usersService.findOneUser(account);
 
 		if (!user) throw new Error('使用者帳號不存在');
 		else if (!bcrypt.compareSync(password, user.password)) throw new Error('密碼錯誤');
 
-		return { uid: user.id, account: user.account };
+		return { id: user.id, account: user.account, roles: [] };
 	}
 
 	/**生成 JWT token */
-	async createJwtToken<T>(payload: T) {
-		return this.jwtService.sign(payload as object, {
+	async createJwtToken(payload: jwtPayloadDto) {
+		return this.jwtService.sign(payload, {
 			secret: this.configService.get<string>('jwtSecret'),
 			issuer: this.configService.get<string>('jwtIssuer'),
 			subject: this.configService.get<string>('jwtSubject'),
@@ -60,14 +63,19 @@ export class AuthService {
 	}
 
 	/**生成 Refresh Token */
-	async createRefreshToken<T>(payload: T) {
-		return this.jwtService.sign(payload as object, {
+	async createRefreshToken(payload: { id: number }) {
+		const token = this.jwtService.sign(payload, {
 			expiresIn: '7d',
 			secret: this.configService.get<string>('jwtSecret'),
 			issuer: this.configService.get<string>('jwtIssuer'),
 			subject: this.configService.get<string>('jwtSubject'),
 			audience: this.configService.get<string>('jwtAudience'),
 		});
+
+		const update = await this.usersService.updateRefreshToken(payload.id, token, moment().utc().add(7, 'days').toDate());
+		console.log('update', update);
+
+		return token;
 	}
 
 	/**

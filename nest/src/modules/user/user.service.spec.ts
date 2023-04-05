@@ -3,8 +3,8 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { expect } from 'chai';
 import { Repository } from 'typeorm';
 
-import { Users } from './users.entity';
-import { UsersService } from './users.service';
+import { User } from './entities/users.entity';
+import { UsersService } from './user.service';
 
 const user1 = {
 	account: '123',
@@ -13,7 +13,7 @@ const user1 = {
 
 describe('UsersService', () => {
 	let service: UsersService;
-	let repo: Repository<Users>;
+	let repo: Repository<User>;
 
 	// 建立 module
 	before(async () => {
@@ -21,7 +21,7 @@ describe('UsersService', () => {
 			providers: [
 				UsersService,
 				{
-					provide: getRepositoryToken(Users),
+					provide: getRepositoryToken(User),
 					useValue: {
 						findOne: () =>
 							new Promise((sol) => {
@@ -33,7 +33,7 @@ describe('UsersService', () => {
 		}).compile();
 
 		service = module.get<UsersService>(UsersService);
-		repo = module.get<Repository<Users>>(getRepositoryToken(Users));
+		repo = module.get<Repository<User>>(getRepositoryToken(User));
 	});
 
 	describe('test', () => {

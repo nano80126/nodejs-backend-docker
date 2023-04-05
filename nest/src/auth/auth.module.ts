@@ -7,7 +7,8 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'rxjs';
 
-import { UsersModule } from '@/modules/users/users.module';
+import { RefreshToken } from '@/modules/user/entities/refreshToken.entify';
+import { UsersModule } from '@/modules/user/user.module';
 
 import { AuthController } from './auth.controller';
 import { AuthMiddleware } from './auth.middleware';

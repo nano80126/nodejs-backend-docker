@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
 import { AuthService } from '../auth.service';
-import { jwtPayloadDto } from '../dto/jwt.dto';
+// import { jwtPayloadDto } from '../dto/jwt.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,6 +16,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 				passReqToCallback: true,
 			},
 			async (req: Express.Request, payload: object, done: VerifiedCallback) => {
+				// req.user 來自 api key guard
+				// { apiKeyIsValid: boolean }
 				done(null, { ...req.user, ...payload }, { message: 'JWT驗證成功' });
 			},
 		);

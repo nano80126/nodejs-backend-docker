@@ -1,4 +1,12 @@
-export interface jwtPayloadDto {
+/**validateUser response dto */
+export interface validateUserResDto {
+	id: number;
+	account: string;
+	roles: string[];
+}
+
+/**jwt payload */
+export interface jwtPayloadDto extends validateUserResDto {
 	/**發行人 */
 	iss?: string;
 	/**主題 */
@@ -13,8 +21,4 @@ export interface jwtPayloadDto {
 	iat?: number;
 	/**JWT ID */
 	jti?: string;
-	/**帳號 */
-	account: string;
-	uid: number;
-	roles?: string[];
 }

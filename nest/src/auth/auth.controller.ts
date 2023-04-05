@@ -8,15 +8,16 @@ import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import moment from 'moment';
 
-import { Users } from '@/modules/users/entities/users.entity';
+import { User } from '@/modules/user/entities/users.entity';
 
 import { SkipJwtToken } from './auth.decorator';
 import { AuthService } from './auth.service';
+import { validateUserResDto } from './dto/auth.interface';
 import { ApiKeyAuthGuard } from './guard/apiKey-auth.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 
 interface FastifyRequestWithUserAuth extends FastifyRequest {
-	user: Users & { apiKeyIsValid: boolean };
+	user: validateUserResDto & { apiKeyIsValid: boolean };
 	authInfo: {
 		message: string;
 	};
@@ -37,7 +38,7 @@ export class AuthController {
 		delete req.user.apiKeyIsValid;
 
 		const accessToken = await this.authService.createJwtToken(req.user);
-		const refreshToken = await this.authService.createRefreshToken(req.user);
+		const refreshToken = await this.authService.createRefreshToken({ id: req.user.id });
 		res.status(HttpStatus.OK).setCookie('refresh-token', refreshToken, { httpOnly: true }).send({ accessToken, refreshToken });
 	}
 

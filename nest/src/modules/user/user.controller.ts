@@ -3,11 +3,10 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { SkipApiKey, SkipJwtToken } from '@/auth/auth.decorator';
-import { ApiKeyAuthGuard } from '@/auth/guard/apiKey-auth.guard';
-import { JwtAuthGuard } from '@/auth/guard/jwt-auth.guard';
+import { jwtPayloadDto } from '@/auth/dto/auth.interface';
 
 import { CreateUserDto } from './dtos/users.interface';
-import { UsersService } from './users.service';
+import { UsersService } from './user.service';
 
 @ApiTags('Users')
 @Controller('users')
@@ -16,13 +15,9 @@ export class UsersController {
 
 	@ApiOkResponse({ status: HttpStatus.OK, description: 'get users list successfully' })
 	@Get()
-	async getUserList(@Req() req: FastifyRequest & { user: object }, @Res() res: FastifyReply) {
+	async getUserList(@Req() req: FastifyRequest & { user: jwtPayloadDto }, @Res() res: FastifyReply) {
 		try {
-			console.log('req.user', req.user);
-			// console.log(req);
-
 			const result = await this.usersService.findAllUsers();
-
 			res.status(HttpStatus.OK).send(result);
 		} catch (error) {
 			res.status(HttpStatus.BAD_REQUEST).send(error);
@@ -42,6 +37,7 @@ export class UsersController {
 	}
 
 	@ApiOkResponse({ status: HttpStatus.CREATED, description: '' })
+	@SkipJwtToken()
 	@Post()
 	async createUser(@Res() res: FastifyReply, @Body() createUserDto: CreateUserDto) {
 		const { account, password, passwordRepeat } = createUserDto;
@@ -49,16 +45,19 @@ export class UsersController {
 		try {
 			if (await this.usersService.checkAccountExist(account)) {
 				res.status(HttpStatus.BAD_REQUEST).send({
+					state: HttpStatus.BAD_REQUEST,
 					message: '此帳號已存在',
 				});
 				return;
 			} else if (password !== passwordRepeat) {
 				res.status(HttpStatus.BAD_REQUEST).send({
+					state: HttpStatus.BAD_REQUEST,
 					message: '密碼與密碼確認不符',
 				});
 				return;
 			} else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/.test(password) == false) {
 				res.status(HttpStatus.BAD_REQUEST).send({
+					state: HttpStatus.BAD_REQUEST,
 					message: '密碼不符合規則，須為8~16碼之大寫、小寫與數字之組合',
 				});
 				return;

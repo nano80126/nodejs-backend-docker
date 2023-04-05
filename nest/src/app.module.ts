@@ -10,9 +10,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ApiKeyAuthGuard } from './auth/guard/apiKey-auth.guard';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
-import { AppConfig, JwtConfig, VideoConfig } from './configs/index';
+import { AppConfig, JwtConfig, RedisConfig, VideoConfig } from './configs/index';
 import { LyrcisModule } from './modules/lyrics/lyrics.module';
-import { UsersModule } from './modules/users/users.module';
+import { UsersModule } from './modules/user/user.module';
 import { VideoModule } from './modules/video/video.module';
 
 @Module({
@@ -20,7 +20,7 @@ import { VideoModule } from './modules/video/video.module';
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: '.env',
-			load: [AppConfig, VideoConfig, JwtConfig],
+			load: [AppConfig, VideoConfig, JwtConfig, RedisConfig],
 		}),
 		TypeOrmModule.forRoot({
 			type: 'mariadb',
