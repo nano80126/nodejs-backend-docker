@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
@@ -7,13 +7,16 @@ import { IS_PUBLIC_KEY } from '../auth.decorator';
 
 @Injectable()
 export class ApiKeyAuthGuard extends AuthGuard('api-key') {
+	private readonly logger = new Logger(ApiKeyAuthGuard.name);
+
 	constructor(private reflector: Reflector) {
 		super();
 	}
 
-	handleRequest<TUser = any>(err: Error, user: any, info: Error | { message: string }, context: ExecutionContext, status?: any): TUser {
+	handleRequest<TUser = any>(err: Error, user: any, info: Error | Express.AuthInfo, context: ExecutionContext, status?: any): TUser {
+		// this.logger.debug('apikey', err, user, info, status);
 		if (err) throw new UnauthorizedException(err.message);
-		else if (!user) throw new UnauthorizedException(info.message);
+		else if (!user && info) throw new UnauthorizedException((info as Error).message);
 		return user;
 	}
 

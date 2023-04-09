@@ -1,7 +1,7 @@
-import console from 'console';
+import console, { log } from 'console';
 import { IncomingHttpHeaders } from 'http';
 
-import { Body, Controller, HttpStatus, Param, Query, Req, Res } from '@nestjs/common';
+import { Body, ConsoleLogger, Controller, HttpStatus, Logger, Param, Query, Req, Res } from '@nestjs/common';
 import { Get, Headers, Patch, Post, Request, UseGuards } from '@nestjs/common/decorators';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -24,18 +24,22 @@ interface FastifyRequestWithUserAuth extends FastifyRequest {
 }
 
 @ApiTags('Auth')
-@UseGuards(ApiKeyAuthGuard)
+// @UseGuards(ApiKeyAuthGuard)
 @Controller('auth')
 export class AuthController {
+	private readonly logger = new Logger(AuthController.name);
+	// private readonly logger: CustomLogger,
 	constructor(private readonly authService: AuthService) {
-		//
+		// this.logger.setContext(AuthController.name);
 	}
 
 	@UseGuards(LocalAuthGuard)
 	@SkipJwtToken()
 	@Post('login')
 	async login(@Req() req: FastifyRequestWithUserAuth, @Res() res: FastifyReply) {
-		delete req.user.apiKeyIsValid;
+		// console.log('login', req.user);
+		this.logger.debug(JSON.stringify(req.user));
+		this.logger.debug(JSON.stringify(req.body));
 
 		const accessToken = await this.authService.createJwtToken(req.user);
 		const refreshToken = await this.authService.createRefreshToken({ id: req.user.id });

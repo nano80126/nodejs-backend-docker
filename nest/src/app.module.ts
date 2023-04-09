@@ -1,8 +1,7 @@
-import { Module, SetMetadata } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, SetMetadata } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import mariadb, { createPool } from 'mariadb';
 import { DataSource } from 'typeorm';
 
 import { AppController } from './app.controller';
@@ -11,9 +10,11 @@ import { AuthModule } from './auth/auth.module';
 import { ApiKeyAuthGuard } from './auth/guard/apiKey-auth.guard';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { AppConfig, JwtConfig, RedisConfig, VideoConfig } from './configs/index';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 import { LyrcisModule } from './modules/lyrics/lyrics.module';
 import { UsersModule } from './modules/user/user.module';
 import { VideoModule } from './modules/video/video.module';
+import { RolesGarud } from './shared/role/role.guard';
 
 @Module({
 	imports: [
@@ -37,19 +38,35 @@ import { VideoModule } from './modules/video/video.module';
 			autoLoadEntities: true,
 		}),
 
+		// LoggerModule.forRootAsync({
+		// 	useFactory: async () => {
+		// 		return { pinoHttp: pinoHttpOption(process.env.NODE_ENV) };
+		// 	},
+		// }),
+
 		AuthModule,
 		UsersModule,
 		LyrcisModule,
 		VideoModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, { provide: APP_GUARD, useClass: ApiKeyAuthGuard }, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+	providers: [
+		AppService,
+		{ provide: APP_GUARD, useClass: ApiKeyAuthGuard },
+		{ provide: APP_GUARD, useClass: JwtAuthGuard },
+		// { provide: APP_GUARD, useClass: RolesGarud },
+	],
 	// , { provide: APP_GUARD, useClass: JwtAuthGuard }
 	// { provide: APP_GUARD, useClass: JwtAuthGuard }
 	// , { provide: APP_GUARD, useClass: JwtAuthGuard }
 })
-export class AppModule {
+export class AppModule implements NestModule {
 	constructor(private dataSource: DataSource) {
 		//
+		// console.log(123);
+	}
+
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(LoggerMiddleware).forRoutes('/');
 	}
 }

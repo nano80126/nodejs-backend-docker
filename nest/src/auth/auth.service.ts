@@ -4,13 +4,8 @@ import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import * as bcrypt from 'bcrypt';
-import { use } from 'chai';
-import { sign, verify } from 'jsonwebtoken';
 import moment from 'moment';
-import { Repository } from 'typeorm';
 
-import { RefreshToken } from '@/modules/user/entities/refreshToken.entify';
-import { User } from '@/modules/user/entities/users.entity';
 import { UsersService } from '@/modules/user/user.service';
 
 import { jwtPayloadDto, validateUserResDto } from './dto/auth.interface';
@@ -28,12 +23,14 @@ export class AuthService {
 	// }
 
 	/** 驗證 X-API-KEY */
-	validateApiKey(apiKey: string) {
-		return apiKey === this.configService.get<string>('xApiKey');
+	async validateApiKey(apiKey: string) {
+		const isValid = apiKey === this.configService.get<string>('xApiKey');
+		if (!isValid) throw new Error('X-API-KEY 不正確');
+		return isValid;
 	}
 
 	/**驗證 User */
-	async validateUser(account: string, password: string): Promise<validateUserResDto> {
+	async validateUser(account: string, password: string) {
 		const user = await this.usersService.findOneUser(account);
 
 		if (!user) throw new Error('使用者帳號不存在');
@@ -72,8 +69,9 @@ export class AuthService {
 			audience: this.configService.get<string>('jwtAudience'),
 		});
 
-		const update = await this.usersService.updateRefreshToken(payload.id, token, moment().utc().add(7, 'days').toDate());
-		console.log('update', update);
+		// const update =
+		await this.usersService.updateRefreshToken(payload.id, token, moment().utc().add(7, 'days').toDate());
+		// console.log('update', update);
 
 		return token;
 	}

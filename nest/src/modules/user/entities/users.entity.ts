@@ -1,5 +1,8 @@
 import { BaseEntity, Column, DeleteDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+import { Roles } from '@/shared/role/role.decorator';
+import { Role } from '@/shared/role/role.enum';
+
 import { RefreshToken } from './refreshToken.entify';
 
 @Entity()
@@ -16,6 +19,9 @@ export class User extends BaseEntity {
 
 	@Column({ type: 'varchar', length: 20, comment: '遮蔽的密碼' })
 	password_masked: string;
+
+	// @Column({ type: 'enum', enum: Role, array: true, default: [Role.User] })
+	// roles: Role[];
 
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
 	'update_time': Date;

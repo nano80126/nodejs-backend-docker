@@ -11,7 +11,9 @@ import { UsersService } from './user.service';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) {
+		// this.logger.setContext(UsersController.name);
+	}
 
 	@ApiOkResponse({ status: HttpStatus.OK, description: 'get users list successfully' })
 	@Get()

@@ -10,8 +10,7 @@ export class AuthMiddleware implements NestMiddleware {
 	}
 
 	use(req: FastifyRequest, res: FastifyReply, next: (error?: Error) => void) {
-		console.log('auth middle');
-
+		// console.log('auth middle');
 		next();
 	}
 }

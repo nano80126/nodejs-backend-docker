@@ -1,8 +1,9 @@
 import { fastifyCookie } from '@fastify/cookie';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import * as dotenv from 'dotenv';
+import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 
@@ -10,14 +11,17 @@ async function bootstrap() {
 	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
 		cors: {
 			origin: ['http://localhost:3000', 'http://localhost:3001'],
+			methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 		},
+		// logger: false,
+		// bufferLogs: true,
 	});
 
 	await app.register(fastifyCookie, {
 		secret: 'my-secret',
 	});
 
-	const config = new DocumentBuilder()
+	const swaggerConfig = new DocumentBuilder()
 		.setTitle('Lyrics example')
 		.setDescription('The lyrics API description')
 		.setVersion('1.0')
@@ -25,11 +29,26 @@ async function bootstrap() {
 		.addTag('YouTube')
 		.build();
 
-	const document = SwaggerModule.createDocument(app, config);
+	const document = SwaggerModule.createDocument(app, swaggerConfig);
 	SwaggerModule.setup('swagger', app, document);
 
-	// console.log(process.env.HOST, process.env.PORT);
-	await app.listen(process.env.PORT || 3000, process.env.HOST || '127.0.0.1');
+	// app.useLogger(app.get(Logger));
+
+	const configService = app.get(ConfigService);
+	await app.listen(configService.get<number>('port'), configService.get<string>('host'));
+
+	return configService;
 }
 
-bootstrap();
+bootstrap().then((configService) => {
+	console.log(); // 換行用
+	console.log('+' + ''.padEnd(120, '=') + '+');
+	console.log(
+		''.padEnd(20, ' '),
+		`HOST: [ ${configService.get('host')} ] -`,
+		`PORT: [ ${configService.get('port')} ] -`,
+		`ENV: [ ${configService.get('env')} ]`,
+		''.padEnd(20, ' '),
+	);
+	console.log('+' + ''.padEnd(120, '=') + '+');
+});

@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'rxjs';
 
+import { LoggerMiddleware } from '@/middleware/logger.middleware';
 import { RefreshToken } from '@/modules/user/entities/refreshToken.entify';
 import { UsersModule } from '@/modules/user/user.module';
 
@@ -28,6 +29,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 				expiresIn: '1d',
 			},
 		}),
+		// LoggerModule,
 	],
 	controllers: [AuthController],
 	providers: [AuthService, ApiKeyStrategy, LocalStrategy, JwtStrategy],
@@ -37,4 +39,8 @@ export class AuthModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer.apply(AuthMiddleware).forRoutes('auth');
 	}
+
+	// configure(consumer: MiddlewareConsumer) {
+	// 	consumer.apply(LoggerMiddleware).forRoutes('/');
+	// }
 }
