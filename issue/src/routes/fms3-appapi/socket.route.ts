@@ -24,7 +24,7 @@ router.post('/subscribe', (req, res) => {
 		(sRes: SubscribeResDTO) => {
 			console.log(`Room: ${sRes.data}`);
 
-			appSocketClient.on(`${roomName}Message`, (msg) => {
+			appSocketClient.on(`${roomName}Message`, (msg: string) => {
 				console.log(`${roomName}Message`, msg);
 			});
 			res.status(200).send(sRes);

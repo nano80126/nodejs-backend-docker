@@ -1,7 +1,13 @@
 # NestJS
 dist/
 node_modules/
+
+# dotenv environment variables file
 .env
+.env.dev
+.env.prod
+.env.test
+!.env.sample
 
 # Logs
 logs
@@ -10,4 +16,3 @@ logs
 # OS generated files
 .DS_Store*
 Thumbs.db
-
