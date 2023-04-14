@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "module": "commonJS",
+    // "moduleResolution": "Node",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2020",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+        "@/*" : ["src/*"],
+    },
+    "typeRoots": ["./node_modules/@types"],                                 
+    "resolveJsonModule": true,                        
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+  },
+  "include": ["src/**/*"],
+  "ts-node": {
+    "transpileOnly": true
+  }
+}

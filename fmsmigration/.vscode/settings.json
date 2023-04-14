@@ -1,0 +1,29 @@
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript"
+    ],
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": false, // true會衝突 // prettier & eslint
+    "editor.codeActionsOnSave": {
+        "source.fixAll": false,
+        "source.fixAll.eslint": true // 由 eslint 整理，但為prettier設定
+    },
+    "[json]": {
+        "editor.formatOnSave": true, // 針對 json
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.formatOnSave": true, // 針對 .prettierrc.js & .eslintrc.js
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.formatOnSave": true, // 針對 ts
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "markdown.styles": [
+        "https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    ]
+}
