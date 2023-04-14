@@ -15,9 +15,16 @@ import { KWCarNaviDirectiosDTO } from './dtos/kw.interface';
 
 // routeds
 import coldchainRouter from './routes/codechain.route';
+import appsocket from './routes/fms3-appapi/socket.route';
 import { JourneyReportListReqDTO } from './dtos/journey.interface';
 
 import { initSocketIO } from './socket';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // 載入 .env
 dotenv.config();
@@ -25,8 +32,60 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 // const io = new ioServer().listen(server);
-const client1 = ioClient('ws://127.0.0.1:3000/user');
-const client2 = ioClient('ws://127.0.0.1:3000/admin');
+// const client1 = ioClient('ws://127.0.0.1:3000/user', {
+// 	transports: ['websocket', 'polling'],
+// });
+// const client2 = ioClient('ws://127.0.0.1:3000/admin', {
+// 	transports: ['websocket', 'polling'],
+// });
+
+// const clientArr = new Array(25).fill(null).map(() => {
+// 	return ioClient('ws://127.0.0.1:3000/admin', {
+// 		transports: ['websocket', 'polling'],
+// 	});
+// });
+
+// clientArr.forEach((e) => {
+// 	e.on('joinroom', (msg) => {
+// 		console.log(`${msg.id} join room. ${e.id}`);
+// 	});
+// });
+
+// setTimeout(() => {
+// 	ioClient('ws://127.0.0.1:3000/admin', {
+// 		transports: ['websocket', 'polling'],
+// 	});
+// }, 5000);
+
+const appSocketClient = ioClient('ws://127.0.0.1:5000/appwss', {
+	path: '/appsocket',
+	transports: ['websocket'],
+	secure: true,
+	auth: {
+		token:
+			'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
+			'.eyJub25jZSI6IjE3MzIyMDE5ODY1NTI3MDgwODE3Ii' +
+			'wiYXpwIjoiZWM4YjI0OWYxOGY0NGEwZWI4ZDU3YzUyM' +
+			'zc0YjNmOTciLCJzY29wZSI6IiIsImlhdCI6MTY4MTM3' +
+			'NzIzMSwiZXhwIjoxNjgxNDYzNjMxLCJhdWQiOltdLCJ' +
+			'pc3MiOiJmbXMzIiwic3ViIjoiMTczMjIwMTk4NjU1Mj' +
+			'cwNzcwOTQifQ.m_G_XwyAa7iCOrX1lO8jm7-tZ3m7rFgrCzWCByq_2F8',
+	},
+});
+
+// client1.on('connection', (socket) => {
+// 	console.log(socket);
+// });
+
+// client1.on('broadcast', (msg, callback) => {
+// 	console.log(msg);
+// 	console.log(callback);
+// });
+
+// client2.on('broadcast', (msg, callback) => {
+// 	console.log(msg);
+// 	console.log(callback);
+// });
 
 app.use(express.json());
 app.use(
@@ -59,7 +118,6 @@ app.get('/ping', (req, res) => {
 
 app.post('/ping', (req, res) => {
 	console.log(req.body);
-
 	res.status(200).send('susscess');
 });
 
@@ -78,6 +136,7 @@ app.get('/time-format', (req, res) => {
 	res.status(200).send({ unix });
 });
 
+app.use('/appsocket/', appsocket);
 app.use('/coldchain/', coldchainRouter);
 
 app.get('/socket/joinroom', async (req, res) => {
@@ -92,10 +151,12 @@ app.get('/socket/joinroom', async (req, res) => {
 });
 
 app.get('/send/message', async (req, res) => {
-	const { a, b, c } = req.query;
-
-	client1.emit('subscribe', { a, b, c });
-	client1.emit('subscribe', { b, a, c: a });
+	// const { a, b, c } = req.query;
+	// client1.emit('subscribe', { a, b, c });
+	// console.log(r);
+	// client1.emit('subscribe', { b, a, c: a });
+	// client2.emit('subscribe', { c, b, a });
+	// client2.emit('subscribe', { b, a, c: a });
 
 	res.status(200).send({});
 });
@@ -256,34 +317,4 @@ server.listen(port, host, () => {
 
 initSocketIO(server);
 
-// io.of('/ws').on('connection', (socket) => {
-// 	console.log('one user connected', socket.id);
-
-// 	socket.use((packet, next) => {
-// 		// packet[0] : channel name, packet[1] : payload
-// 		if (typeof packet[1] === 'string') {
-// 			packet[1] = JSON.parse(packet[1]);
-// 		}
-// 		next();
-// 	});
-
-// 	socket.on('disconnect', () => {
-// 		console.log('one user disconnected');
-// 	});
-
-// 	socket.on('subscribe', (msg) => {
-// 		console.log(msg);
-// 	});
-// });
-
-setTimeout(() => {
-	const socketRes1 = client1.connect();
-	const socketRes2 = client2.connect();
-	// setTimeout(() => {
-	// 	const { connected } = socketRes1;
-	// 	console.log(connected);
-	// 	console.log(socketRes2.connected);
-	// }, 1000);
-}, 1000);
-
-export { app, server };
+export { app, server, appSocketClient };
