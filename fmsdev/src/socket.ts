@@ -1,8 +1,6 @@
 // import { app, server } from 'app';
-import { type } from 'os';
 import { Server } from 'http';
 import { Server as ioServer } from 'socket.io';
-import { Socket } from 'socket.io-client';
 // import io from :Socket
 
 const adminSpace = '/admin';

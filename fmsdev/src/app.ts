@@ -18,6 +18,7 @@ import { KWCarNaviDirectiosDTO } from './dtos/kw.interface';
 
 // routeds
 import coldchainRouter from './routes/codechain.route';
+import appsockerRouter from "./routes/fms3-appapi/socket.route"
 import { JourneyReportListReqDTO } from './dtos/journey.interface';
 
 import { initSocketIO } from './socket';
@@ -30,16 +31,23 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 // const io = new ioServer().listen(server);
-const client1 = ioClient('ws://127.0.0.1:3000/user');
-const client2 = ioClient('ws://127.0.0.1:3000/admin');
+//  
 
-
-const appSocketClient = ioClient('ws://127.0.0.1:3000/admin', {
+const appSocketClient = ioClient('ws://127.0.0.1:5000/appwss', {
+	path: '/appsocket',
+	transports: ['websocket'],
+	secure: true,
 	auth: {
-		
-	}
+		token:
+			'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
+			'.eyJub25jZSI6IjE3MzIyMDE5ODY1NTI3MDgwODE3Ii' +
+			'wiYXpwIjoiZWM4YjI0OWYxOGY0NGEwZWI4ZDU3YzUyM' +
+			'zc0YjNmOTciLCJzY29wZSI6IiIsImlhdCI6MTY4MTM3' +
+			'NzIzMSwiZXhwIjoxNjgxNDYzNjMxLCJhdWQiOltdLCJ' +
+			'pc3MiOiJmbXMzIiwic3ViIjoiMTczMjIwMTk4NjU1Mj' +
+			'cwNzcwOTQifQ.m_G_XwyAa7iCOrX1lO8jm7-tZ3m7rFgrCzWCByq_2F8',
+	},
 });
-
 
 app.use(express.json());
 app.use(
@@ -130,7 +138,7 @@ app.get('/time-format', (req, res) => {
 	res.status(200).send({ unix });
 });
 
-app.use('/appsocket/', );
+app.use('/appsocket/', appsockerRouter);
 app.use('/coldchain/', coldchainRouter);
 
 app.get('/socket/joinroom', async (req, res) => {
@@ -145,12 +153,12 @@ app.get('/socket/joinroom', async (req, res) => {
 });
 
 app.get('/send/message', async (req, res) => {
-	const { a, b, c } = req.query;
+	// const { a, b, c } = req.query;
 
-	client1.emit('subscribe', { a, b, c });
-	client1.emit('subscribe', { b, a, c: a });
+	// client1.emit('subscribe', { a, b, c });
+	// client1.emit('subscribe', { b, a, c: a });
 
-	res.status(200).send({});
+	// res.status(200).send({});
 });
 
 app.post('/geo/directions', async (req, res) => {
@@ -309,31 +317,5 @@ server.listen(port, host, () => {
 
 initSocketIO(server);
 
-setTimeout(() => {
-	const socketRes1 = client1.connect();
-	const socketRes2 = client2.connect();
 
-	setTimeout(() => {
-		console.log(socketRes1.connected, socketRes2.connected);
-	}, 300);
-}, 1000);
-
-// console.log(convertDateArr2(1679328000000, 1679414399000));
-
-// console.log(
-// 	JSON.parse(
-// 		'{"journeyCode":230321010001,"dataCount":0,"time":1679363818938,"deviceId":"","carStatus":1,"enabledCode":"N457LYLGVC","vincode":"XZU640-4019315","fenceId":[],"driverUid":"17321769261853639291","gps":{"longitude":121.459346,"latitude":25.063874,"speed":0,"speedLimit":0,"azimuth":304.83},"telecommunications":{"imsi":""},"can":{"totalMileage":2020.3,"accumulatedMileage":0,"canSpeed":0,"engine":{"engineTotalTime":115.3}},"event":[{"type":1,"startTime":1679363818938},{"type":4,"startTime":1679363818938}],"protocolVersion":"1","externalDevices":{"tpms":{},"coldChain":{"sensor1":{"temp":30}}}}',
-// 	),
-// );
-
-console.log(moment.unix(1679500800000 / 1000));
-console.log(moment.utc(1679500800000));
-
-// console.log(moment.utc(1679500800000).format('YYYY-MM-DD HH:mm:ss'));
-// console.log(moment(1679500800000).format('YYYY-MM-DD HH:mm:ss'));
-// console.log(new Date(1679500800000));
-// console.log(new Date(1679500800000).toLocaleString());
-
-// console.log(moment.unix(1679500800).format('YYYY-MM-DD HH:mm:ss'));
-
-export { app, server };
+export { app, server,appSocketClient };
